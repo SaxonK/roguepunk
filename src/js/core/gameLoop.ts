@@ -1,5 +1,6 @@
 import { Scope } from "../utils/interfaces";
 import FPSManager from "../utils/FpsManager";
+import update from "./gameUpdate";
 
 const gameLoop = (gameScope: Scope): void => {
   let lastUpdate: EpochTimeStamp = window.performance.now();
@@ -18,8 +19,9 @@ const gameLoop = (gameScope: Scope): void => {
 
       if(gameScope.displayFramerate) {
         fps.calculateFPS(lastUpdate);
-      }
+      };
 
+      gameScope.state = update(gameScope.state);
       console.log('tick');
     };
   };
