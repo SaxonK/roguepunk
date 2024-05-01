@@ -1,4 +1,5 @@
-import { Scope, States } from "./utils/interfaces";
+import { FpsManager, Scope, States } from "./utils/interfaces";
+import FPSManager from "./utils/FpsManager";
 import gameLoop from "./core/gameLoop";
 
 let gameContainer = document.querySelector(`#shootey-wavey`) as HTMLElement;
@@ -7,15 +8,13 @@ class Game implements Scope {
   viewport = document.createElement('canvas') as HTMLCanvasElement;
   context = this.viewport.getContext('2d') as CanvasRenderingContext2D;
   animationFrameId: number = 0;
-  displayFramerate: boolean;
-  framerate: number;
+  fps: FpsManager;
   state: States;
 
   constructor(width: number, fps: number, displayFps: boolean ) {
     this.viewport.width = width;
     this.viewport.height = width / 1.778;
-    this.framerate = fps;
-    this.displayFramerate = displayFps;
+    this.fps = new FPSManager(displayFps, fps, window.performance.now());
     this.state = {
       entities: [],
       player: {
@@ -26,8 +25,11 @@ class Game implements Scope {
           y: 0
         },
         speed: 1,
+        render: (): void => {
+          
+        },
         update: (): void => {
-          console.log('update player state');
+          
         }
       }
     };
@@ -43,10 +45,7 @@ class Game implements Scope {
   public startGame(): void {
     gameLoop(this);
   };
-  public toggleDisplayFramerate(): void {
-    this.displayFramerate = !this.displayFramerate;
-  };
-}
+};
 
 const game = new Game(800, 60, true);
 game.initialiseCanvas();
@@ -68,4 +67,10 @@ startButton.addEventListener('click', () => {
 const pauseButton = document.querySelector(`button#pause`) as HTMLButtonElement;
 pauseButton.addEventListener('click', () => {
   game.pauseGame();
+});
+
+/* Bind toggleFramerateDisplay() to Toggle FPS button */
+const fpsButton = document.querySelector(`button#fps-display`) as HTMLButtonElement;
+fpsButton.addEventListener('click', () => {
+  game.fps.toggleFramerateDisplay();
 });
