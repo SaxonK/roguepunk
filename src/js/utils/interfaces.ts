@@ -12,6 +12,13 @@ export interface Entity {
   stats: Object;
   state: State;
 };
+export interface FpsManager {
+  displayFramerate: boolean;
+  TargetFramerate: number;
+  calculateFPS: (timestamp: EpochTimeStamp) => void;
+  render: (context: CanvasRenderingContext2D, width: number) => void;
+  toggleFramerateDisplay: () => void;
+};
 export interface Item {
   id: number;
   type: string;
@@ -31,6 +38,7 @@ export interface State {
     y: number;
   };
   speed: number;
+  render: () => void;
   update: () => void;
 };
 export interface States {
@@ -38,9 +46,10 @@ export interface States {
   player: State;
 };
 export interface Scope {
+  viewport: HTMLCanvasElement;
+  context: CanvasRenderingContext2D;
+  fps: FpsManager;
   animationFrameId: number;
-  displayFramerate: boolean;
-  framerate: number;
   state: States;
 };
 export interface Weapon {

@@ -6,13 +6,17 @@
 import { Cycle, Cycles } from "./interfaces";
 
 class FPSManager {
+  public displayFramerate: boolean;
+  public TargetFramerate: number;
   private cycles: Cycles;
   private lastUpdate: number;
   private fps: number = 0;
   private initialCycle: string = "";
   private resetInterval: number;
 
-  constructor(previousUpdate: number) {
+  constructor(displayFramerate: boolean, TargetFramerate: number, previousUpdate: number) {
+    this.displayFramerate = displayFramerate;
+    this.TargetFramerate = TargetFramerate;
     this.lastUpdate = previousUpdate;
     this.initialCycle = "active";
     this.resetInterval = 5;
@@ -30,9 +34,6 @@ class FPSManager {
     };
   };
 
-  public get FPS(): number {
-    return this.fps;
-  };
   public calculateFPS(timestamp: EpochTimeStamp): void {
     /* Calculate FPS based on the elapsed time and frame count of the active cycle */
 
@@ -50,7 +51,7 @@ class FPSManager {
     activeCycle = this.cycles[this.initialCycle];
 
     /* Calculate the current FPS based on the elapsed time and frame count of the active cycle */
-    this.fps = Math.round(1000 / (activeCycle.elapsedTime / activeCycle.frameCount) * 100 ) / 100;
+    this.fps = Math.round(1000 / (activeCycle.elapsedTime / activeCycle.frameCount));
 
     /* 
       Determine the reset interval for the active cycle based on synchronisation with the backup cycle
@@ -70,6 +71,13 @@ class FPSManager {
       this.cycles[this.initialCycle].startTime = timestamp;
       this.cycles[this.initialCycle].elapsedTime = 0;
     };
+  };
+  public render(context: CanvasRenderingContext2D, width: number): void {
+    context.fillStyle = '#000';
+    context.fillText(this.fps.toLocaleString(), width - 20, 15);
+  };
+  public toggleFramerateDisplay(): void {
+    this.displayFramerate = !this.displayFramerate;
   };
 };
 
