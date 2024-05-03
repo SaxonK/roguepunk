@@ -1,4 +1,4 @@
-import { States } from "../utils/interfaces";
+import { States } from "../utils/types/interfaces";
 
 const update = (gameState: States): States => {
   let states = gameState;
@@ -6,9 +6,9 @@ const update = (gameState: States): States => {
   if (states.hasOwnProperty('entities') && states.entities.length > 0) {
     let entities = states.entities;
     
-    entities.forEach(entity => {
+    /* entities.forEach(entity => {
       entity.state.update();
-    });
+    }); */
   };
 
   states.player.update();

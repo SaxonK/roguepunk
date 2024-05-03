@@ -1,4 +1,4 @@
-import { Scope } from "../utils/interfaces";
+import { Scope } from "../utils/types/interfaces";
 import render from "./gameRender";
 import update from "./gameUpdate";
 

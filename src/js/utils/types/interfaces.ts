@@ -8,8 +8,7 @@ export interface Cycles {
 };
 export interface Entity {
   id: number;
-  type: string;
-  stats: Object;
+  stats: Stats;
   state: State;
 };
 export interface FpsManager {
@@ -22,28 +21,37 @@ export interface FpsManager {
 export interface Item {
   id: number;
   type: string;
-  stats: Object;
+  stats: Stats;
 };
 export interface Player {
-  damage: number;
-  hitpoints: number;
-  weapons: Array<Weapon>;
-  items: Array<Item>;
+  stats: Stats;
+  state: PlayerState;
+  render: (context: CanvasRenderingContext2D, viewportWidth: number, viewportHeight: number) => void;
+  update: () => void;
 };
+export interface PlayerState extends State {
+  coins: number;
+  items: Array<Item>;
+  weapons: Array<Weapon>;
+  render: () => void;
+  update: () => void;
+}
 export interface State {
-  coins?: number;
   hitpoints: number;
   position: {
     x: number;
     y: number;
   };
-  speed: number;
-  render: () => void;
-  update: () => void;
 };
 export interface States {
   entities: Array<Entity>;
-  player: State;
+  player: Player;
+};
+export interface Stats {
+  damage: number;
+  hitpoints: number;
+  resilience: number;
+  speed: number;
 };
 export interface Scope {
   viewport: HTMLCanvasElement;
