@@ -1,4 +1,4 @@
-import { Scope } from "../utils/interfaces";
+import { Scope } from "../utils/types/interfaces";
 
 
 const render = (gameScope: Scope): void => {
@@ -12,14 +12,14 @@ const render = (gameScope: Scope): void => {
   };
 
   if (gameScope.state.hasOwnProperty('entities') && gameScope.state.entities.length > 0) {
-    let entities = gameScope.state.entities;
+    /* let entities = gameScope.state.entities;
 
     entities.forEach(entity => {
       entity.state.render();
-    });
+    }); */
   };
 
-  gameScope.state.player.render();
+  gameScope.state.player.render(gameScope.context, width, height);
 };
 
 export default render;

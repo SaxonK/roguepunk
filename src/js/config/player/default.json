@@ -1,0 +1,18 @@
+{
+  "stats": {
+    "damage": 1,
+    "hitpoints": 10,
+    "resilience": 1,
+    "speed": 1
+  },
+  "state": {
+    "coins": 0,
+    "hitpoints": 10,
+    "items": [],
+    "position": { 
+      "x": 0, 
+      "y": 0 
+    },
+    "weapons": []
+  }
+}

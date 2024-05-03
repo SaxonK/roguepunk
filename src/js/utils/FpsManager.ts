@@ -3,7 +3,7 @@
   source: https://bengsfort.github.io/articles/making-a-js-game-part-1-game-engine/
 */
 
-import { Cycle, Cycles } from "./interfaces";
+import { Cycle, Cycles } from "./types/interfaces";
 
 class FPSManager {
   public displayFramerate: boolean;

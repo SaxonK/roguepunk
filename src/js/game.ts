@@ -1,6 +1,10 @@
-import { FpsManager, Scope, States } from "./utils/interfaces";
+import { FpsManager, Scope, States } from "./utils/types/interfaces";
 import FPSManager from "./utils/FpsManager";
 import gameLoop from "./core/gameLoop";
+import Player from "./entities/player/player";
+import * as PlayerConfig from './config/player/default.json';
+import PlayerState from "./entities/player/state";
+import Stats from "./entities/player/stats";
 
 let gameContainer = document.querySelector(`#shootey-wavey`) as HTMLElement;
 
@@ -11,27 +15,13 @@ class Game implements Scope {
   fps: FpsManager;
   state: States;
 
-  constructor(width: number, fps: number, displayFps: boolean ) {
+  constructor(width: number, fps: number, displayFps: boolean, player: Player) {
     this.viewport.width = width;
     this.viewport.height = width / 1.778;
     this.fps = new FPSManager(displayFps, fps, window.performance.now());
     this.state = {
       entities: [],
-      player: {
-        coins: 0,
-        hitpoints: 10,
-        position: {
-          x: 0,
-          y: 0
-        },
-        speed: 1,
-        render: (): void => {
-          
-        },
-        update: (): void => {
-          
-        }
-      }
+      player: player
     };
   };
   
@@ -47,7 +37,12 @@ class Game implements Scope {
   };
 };
 
-const game = new Game(800, 60, true);
+const player = new Player({
+  stats: new Stats(PlayerConfig.stats),
+  state: new PlayerState(PlayerConfig.state)
+});
+
+const game = new Game(800, 60, true, player);
 game.initialiseCanvas();
 
 /* Pause the game if the tab is hidden */
