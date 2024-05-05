@@ -1,3 +1,11 @@
+export interface Camera {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  update: (playerX: number, playerY: number) => void;
+  render: (context: CanvasRenderingContext2D) => void;
+};
 export interface Cycle {
   frameCount: number;
   startTime: EpochTimeStamp;
@@ -26,7 +34,7 @@ export interface Item {
 export interface Player {
   stats: Stats;
   state: PlayerState;
-  render: (context: CanvasRenderingContext2D, viewportWidth: number, viewportHeight: number) => void;
+  render: (context: CanvasRenderingContext2D, cameraWidth: number, cameraHeight: number) => void;
   update: () => void;
 };
 export interface PlayerState extends State {
@@ -44,6 +52,7 @@ export interface State {
   };
 };
 export interface States {
+  camera: Camera;
   entities: Array<Entity>;
   player: Player;
 };

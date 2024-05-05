@@ -1,4 +1,5 @@
 import { FpsManager, Scope, States } from "./utils/types/interfaces";
+import Camera from "./entities/camera/camera";
 import FPSManager from "./utils/FpsManager";
 import gameLoop from "./core/gameLoop";
 import Player from "./entities/player/player";
@@ -20,6 +21,7 @@ class Game implements Scope {
     this.viewport.height = width / 1.778;
     this.fps = new FPSManager(displayFps, fps, window.performance.now());
     this.state = {
+      camera: new Camera(0, 0, this.viewport.width, this.viewport.height),
       entities: [],
       player: player
     };
@@ -42,8 +44,9 @@ const player = new Player({
   state: new PlayerState(PlayerConfig.state)
 });
 
-const game = new Game(800, 60, true, player);
+const game = new Game(window.innerWidth / 1.5, 60, true, player);
 game.initialiseCanvas();
+console.log(game);
 
 /* Pause the game if the tab is hidden */
 document.addEventListener("visibilitychange", () => {

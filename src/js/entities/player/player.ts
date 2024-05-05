@@ -9,15 +9,15 @@ class Player implements PlayerInterface {
     this.stats = player.stats;
     this.state = player.state;
   };
-  update(): void {
+  public update(): void {
 
   };
-  render(context: CanvasRenderingContext2D, viewportWidth: number, viewportHeight: number): void {
-    const width = 10;
-    const height = 10;
+  public render(context: CanvasRenderingContext2D, cameraWidth: number, cameraHeight: number): void {
+    const width = 32;
+    const height = 32;
 
-    const centerX = viewportWidth / 2;
-    const centerY = viewportHeight / 2;
+    const centerX = cameraWidth / 2;
+    const centerY = cameraHeight / 2;
     
     const offsetX = centerX - this.state.position.x - width / 2;
     const offsetY = centerY - this.state.position.y - height / 2;
