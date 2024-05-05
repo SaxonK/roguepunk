@@ -2,8 +2,8 @@ import { Scope } from "../utils/types/interfaces";
 
 
 const render = (gameScope: Scope): void => {
-  let width = gameScope.viewport.width;
-  let height = gameScope.viewport.height;
+  let width = gameScope.state.camera.width;
+  let height = gameScope.state.camera.height;
 
   gameScope.context.clearRect(0, 0, width, height);
 
@@ -20,6 +20,7 @@ const render = (gameScope: Scope): void => {
   };
 
   gameScope.state.player.render(gameScope.context, width, height);
+  gameScope.state.camera.render(gameScope.context);
 };
 
 export default render;
