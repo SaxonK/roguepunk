@@ -31,6 +31,15 @@ export interface Item {
   type: string;
   stats: Stats;
 };
+export interface Layer {
+  name: string;
+  tiles: Array<TilePlacement>;
+  collider: boolean;
+};
+export interface Map {
+  columns: number;
+  rows: number;
+};
 export interface Player {
   stats: Stats;
   state: PlayerState;
@@ -68,6 +77,23 @@ export interface Scope {
   fps: FpsManager;
   animationFrameId: number;
   state: States;
+};
+export interface Tile {
+  width: number;
+  height: number;
+};
+export interface Tilemap {
+  name: string;
+  map: Map;
+  spritesheet: HTMLImageElement;
+  tile: Tile;
+  tileCount: number;
+  layers: Array<Layer>;
+};
+export interface TilePlacement {
+  id: string;
+  x: number;
+  y: number;
 };
 export interface Weapon {
   id: number;

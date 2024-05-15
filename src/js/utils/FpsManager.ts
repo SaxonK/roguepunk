@@ -73,7 +73,7 @@ class FPSManager {
     };
   };
   public render(context: CanvasRenderingContext2D, width: number): void {
-    context.fillStyle = '#000';
+    context.fillStyle = '#FFFF00';
     context.fillText(this.fps.toLocaleString(), width - 20, 15);
   };
   public toggleFramerateDisplay(): void {

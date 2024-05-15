@@ -1,4 +1,5 @@
 import { FpsManager, Scope, States } from "./utils/types/interfaces";
+import { testTilemap } from "./world/initialiser";
 import Camera from "./entities/camera/camera";
 import FPSManager from "./utils/FpsManager";
 import gameLoop from "./core/gameLoop";
@@ -30,6 +31,9 @@ class Game implements Scope {
   public initialiseCanvas(): void {
     this.viewport.id = 'game-container';
     gameContainer.insertBefore(this.viewport, gameContainer.firstChild);
+    testTilemap.tilemap.onload = () => {
+      testTilemap.render(this.context);
+    };
   };
   public pauseGame(): void {
     cancelAnimationFrame(this.animationFrameId);
@@ -46,7 +50,6 @@ const player = new Player({
 
 const game = new Game(window.innerWidth / 1.5, 60, true, player);
 game.initialiseCanvas();
-console.log(game);
 
 /* Pause the game if the tab is hidden */
 document.addEventListener("visibilitychange", () => {
