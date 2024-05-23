@@ -6,6 +6,7 @@ const render = (gameScope: Scope): void => {
   let height = gameScope.state.camera.height;
 
   gameScope.context.clearRect(0, 0, width, height);
+  gameScope.context.translate(width / 2, height / 2);
 
   testTilemap.render(gameScope.context);
 
@@ -21,7 +22,7 @@ const render = (gameScope: Scope): void => {
     }); */
   };
 
-  gameScope.state.player.render(gameScope.context, width, height);
+  gameScope.state.player.render(gameScope.context);
   gameScope.state.camera.render(gameScope.context);
 };
 

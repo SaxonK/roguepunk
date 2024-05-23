@@ -1,3 +1,8 @@
+import { Action } from "./types";
+
+export interface ActionBinding {
+  [key: string]: Action;
+};
 export interface Camera {
   x: number;
   y: number;
@@ -43,7 +48,7 @@ export interface Map {
 export interface Player {
   stats: Stats;
   state: PlayerState;
-  render: (context: CanvasRenderingContext2D, cameraWidth: number, cameraHeight: number) => void;
+  render: (context: CanvasRenderingContext2D) => void;
   update: () => void;
 };
 export interface PlayerState extends State {

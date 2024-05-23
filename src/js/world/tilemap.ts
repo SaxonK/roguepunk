@@ -33,7 +33,9 @@ class Tilemap {
   };
 
   render(destinationCanvas: CanvasRenderingContext2D) {
-    destinationCanvas.drawImage(this.tilemap, -200, -200);
+    const width = this.tilemap.width / 2;
+    const height = this.tilemap.height / 2;
+    destinationCanvas.drawImage(this.tilemap, -Math.abs(width), -Math.abs(height));
   };
 
   private generateTilemap(context: CanvasRenderingContext2D): void {
