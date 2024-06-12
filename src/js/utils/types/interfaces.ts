@@ -1,8 +1,17 @@
+import { Action, ActionStates } from "./types";
+
+export interface ActionBinding {
+  [key: string]: Action;
+};
 export interface Camera {
   x: number;
   y: number;
   width: number;
   height: number;
+  offset: {
+    x: number,
+    y: number
+  }
   update: (playerX: number, playerY: number) => void;
   render: (context: CanvasRenderingContext2D) => void;
 };
@@ -41,10 +50,23 @@ export interface Map {
   rows: number;
 };
 export interface Player {
+  config: PlayerConfig;
   stats: Stats;
   state: PlayerState;
-  render: (context: CanvasRenderingContext2D, cameraWidth: number, cameraHeight: number) => void;
-  update: () => void;
+  boundaryPositionTop: number;
+  boundaryPositionBottom: number;
+  boundaryPositionLeft: number;
+  boundaryPositionRight: number;
+  render: (context: CanvasRenderingContext2D) => void;
+  update: (collisionStates: ActionStates) => void;
+};
+export interface PlayerConfig {
+  width: number;
+  height: number;
+  offset: {
+    x: number;
+    y: number;
+  };
 };
 export interface PlayerState extends State {
   coins: number;

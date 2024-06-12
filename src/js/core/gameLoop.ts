@@ -22,7 +22,7 @@ const gameLoop = (gameScope: Scope): void => {
 
       gameScope.state = update(gameScope.state);
       render(gameScope);
-      console.log('tick');
+      /* console.log('tick'); */
     };
   };
 

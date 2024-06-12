@@ -5,17 +5,25 @@ class Camera implements cameraInterface {
   y: number;
   width: number;
   height: number;
+  offset: {
+    x: number,
+    y: number
+  };
 
   constructor(x: number, y: number, width: number, height: number) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
+    this.offset = {
+      x: 1.5,
+      y: 2
+    };
   };
 
   public update(playerX: number, playerY: number): void {
-    this.x = playerX - this.width / 2;
-    this.y = playerY - this.height / 2;
+    this.x = playerX * this.offset.x;
+    this.y = playerY * this.offset.y;
   };
   public render(context: CanvasRenderingContext2D): void {
     const centerX = this.width / 2;
@@ -34,7 +42,7 @@ class Camera implements cameraInterface {
       this.height
     );
 
-    context.setTransform(1, 0, 0, 1, 0, 0);
+    context.setTransform(1, 0, 0, 1, -1 * this.x, -1 * this.y);
   };
 };
 

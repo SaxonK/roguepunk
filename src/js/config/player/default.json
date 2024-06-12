@@ -1,4 +1,12 @@
 {
+  "config": {
+    "width": 32,
+    "height": 32,
+    "offset": {
+      "x": 0,
+      "y": 0 
+    }
+  },
   "stats": {
     "damage": 1,
     "hitpoints": 10,

@@ -1,0 +1,7 @@
+{
+  "w": "moveUp",
+  "a": "moveLeft",
+  "s": "moveDown",
+  "d": "moveRight",
+  "x": "wrong"
+}
