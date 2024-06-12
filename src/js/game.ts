@@ -5,6 +5,7 @@ import FPSManager from "./utils/FpsManager";
 import gameLoop from "./core/gameLoop";
 import Player from "./entities/player/player";
 import * as PlayerConfig from './config/player/default.json';
+import PlayerConfiguration from "./entities/player/config";
 import PlayerState from "./entities/player/state";
 import Stats from "./entities/player/stats";
 import { controlsManager } from "./core/controls/controlsManager";
@@ -47,6 +48,7 @@ class Game implements Scope {
 };
 
 const player = new Player({
+  config: new PlayerConfiguration(PlayerConfig.config),
   stats: new Stats(PlayerConfig.stats),
   state: new PlayerState(PlayerConfig.state)
 });

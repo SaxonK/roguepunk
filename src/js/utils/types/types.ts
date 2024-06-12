@@ -10,6 +10,6 @@ export type ActionFunctions = {
   [key: string]: () => void;
 };
 export type BinaryArray = (0 | 1)[];
-export type PlayerObject = Omit<Player, 'update' | 'render'>;
+export type PlayerObject = Omit<Player, 'update' | 'render' | 'boundaryPositionTop' | 'boundaryPositionBottom' | 'boundaryPositionLeft' | 'boundaryPositionRight'>;
 export type PlayerStateObject = Omit<PlayerState, 'update' | 'render'>;
 export type TilemapConfiguration = Omit<Tilemap, 'spritesheet' | 'tileCount'>;

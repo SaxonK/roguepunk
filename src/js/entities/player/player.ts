@@ -1,8 +1,9 @@
-import { Player as PlayerInterface, PlayerState, Stats } from "../../utils/types/interfaces";
-import { actions, ActionFunctions, PlayerObject } from "../../utils/types/types";
+import { Player as PlayerInterface, PlayerConfig, PlayerState, Stats } from "../../utils/types/interfaces";
+import { Action, actions, ActionFunctions, ActionStates, PlayerObject } from "../../utils/types/types";
 import { controlsManager } from "../../core/controls/controlsManager";
 class Player implements PlayerInterface {
   actions: ActionFunctions;
+  config: PlayerConfig;
   stats: Stats;
   state: PlayerState;
 
@@ -19,6 +20,10 @@ class Player implements PlayerInterface {
       }
     });
     this.actions = actionObject;
+    this.config = player.config;
+
+    this.config.offset.x = this.state.position.x - this.config.width / 2;
+    this.config.offset.y = this.state.position.y - this.config.height / 2;
   };
   private moveUp(): void {
     this.state.position.y -= this.stats.speed;
@@ -32,29 +37,48 @@ class Player implements PlayerInterface {
   private moveLeft(): void {
     this.state.position.x -= this.stats.speed;
   };
-  public update(): void {
+  private get horizontalOffset(): number {
+    return this.config.width / 2;
+  };
+  private get verticalOffset(): number {
+    return this.config.height / 2;
+  };
+  public get boundaryPositionTop(): number {
+    return this.state.position.y + this.config.offset.y;
+  };
+  public get boundaryPositionBottom(): number {
+    const bottomOffset = this.state.position.y + this.verticalOffset;
+    return this.state.position.y + bottomOffset;
+  };
+  public get boundaryPositionLeft(): number {
+    return this.state.position.x + this.config.offset.x;
+  };
+  public get boundaryPositionRight(): number {
+    const rightOffset = this.state.position.x + this.horizontalOffset;
+    return this.state.position.x + rightOffset;
+  };
+  public update(collisionStates: ActionStates): void {
     controlsManager.activeUserActions.forEach(action => {
-      if (this.actions[action]) {
+      if (this.actions[action] && !collisionStates[action as Action]) {
         this.actions[action]();
       }
     });
-    console.log(this.state.position);
   };
-  public render(context: CanvasRenderingContext2D): void {
-    const width = 32;
-    const height = 32;
-    
-    const offsetX = this.state.position.x - width / 2;
-    const offsetY = this.state.position.y - height / 2;
+  public render(context: CanvasRenderingContext2D): void {    
+    this.config.offset.x = this.state.position.x - this.horizontalOffset;
+    this.config.offset.y = this.state.position.y - this.verticalOffset;
 
-    context.translate(offsetX, offsetY);
+    context.translate(
+      this.config.offset.x,
+      this.config.offset.y
+    );
 
     context.fillStyle = '#FFFF00';
     context.fillRect(
       this.state.position.x,
       this.state.position.y,
-      width,
-      height
+      this.config.width,
+      this.config.height
     );
 
     context.setTransform(1, 0, 0, 1, 0, 0);

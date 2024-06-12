@@ -32,6 +32,22 @@ class Tilemap {
     };
   };
 
+  get scaledTileSize() {
+    return {
+      width: this.tileConfig.width * this.scale,
+      height: this.tileConfig.height * this.scale
+    };
+  };
+
+  checkCollision(x: number, y: number): boolean {
+    let boundaryLayer = this.layers.find(boundary => boundary.collider);
+    let isColliding = boundaryLayer?.tiles.some(tile => tile.x === x && tile.y === y);
+
+    if(isColliding) return true;
+
+    return false;
+  };
+
   render(destinationCanvas: CanvasRenderingContext2D) {
     const width = this.tilemap.width / 2;
     const height = this.tilemap.height / 2;
