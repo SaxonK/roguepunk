@@ -3,5 +3,6 @@
   "a": "moveLeft",
   "s": "moveDown",
   "d": "moveRight",
-  "x": "wrong"
+  "Enter": "select",
+  "Escape": "pause"
 }

@@ -35,7 +35,7 @@ const render = (gameScope: Scope): void => {
   if(gameScope.fps.displayFramerate) {
     gameScope.fps.render(gameScope.context, gameScope.viewport.width);
   };
-
+  
   // Restore the state to remove the camera transformation
   gameScope.context.restore();
 };

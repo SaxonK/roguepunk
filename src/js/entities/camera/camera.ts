@@ -21,10 +21,6 @@ class Camera implements cameraInterface {
     };
   };
 
-  public update(playerX: number, playerY: number): void {
-    this.x = playerX * this.offset.x;
-    this.y = playerY * this.offset.y;
-  };
   public render(context: CanvasRenderingContext2D): void {
     const centerX = this.width / 2;
     const centerY = this.height / 2;
@@ -43,6 +39,14 @@ class Camera implements cameraInterface {
     );
 
     context.setTransform(1, 0, 0, 1, -1 * this.x, -1 * this.y);
+  };
+  public update(playerX: number, playerY: number): void {
+    this.x = playerX * this.offset.x;
+    this.y = playerY * this.offset.y;
+  };
+  public resize(width: number, height: number): void {
+    this.width = width;
+    this.height = height;
   };
 };
 
