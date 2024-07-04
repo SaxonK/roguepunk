@@ -1,8 +1,8 @@
 import { States } from "../utils/types/interfaces";
+import { AllActions } from "../utils/types/types";
 import { testTilemap } from "../world/initialiser";
-import { controlsManager } from "./controls/controlsManager";
 
-const update = (gameState: States): States => {
+const update = (gameState: States, activeActions: AllActions[]): States => {
   let states = gameState;
   let player = states.player;
   let camera = states.camera;
@@ -32,9 +32,11 @@ const update = (gameState: States): States => {
     moveUp: false,
     moveDown: false,
     moveLeft: false,
-    moveRight: false
+    moveRight: false,
+    pause: false,
+    select: false
   };
-  controlsManager.activeUserActions.forEach(action => {
+  activeActions.forEach(action => {
     switch(action) {
       case "moveUp":
         playerBoundaryCollisions[action] = testTilemap.checkCollision(playerTilemapPosition.x, playerBoundaryTilemapPositions.top);
@@ -51,9 +53,8 @@ const update = (gameState: States): States => {
     }
   });
 
-  player.update(playerBoundaryCollisions);
+  player.update(playerBoundaryCollisions, activeActions);
   camera.update(player.state.position.x, player.state.position.y);
-
   return states;
 };
 

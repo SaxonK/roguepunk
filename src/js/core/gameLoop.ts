@@ -1,8 +1,8 @@
-import { Scope } from "../utils/types/interfaces";
+import { ControlsManager, Scope } from "../utils/types/interfaces";
 import render from "./gameRender";
 import update from "./gameUpdate";
 
-const gameLoop = (gameScope: Scope): void => {
+const gameLoop = (gameScope: Scope, ControlsManager: ControlsManager): void => {
   let lastUpdate: EpochTimeStamp = window.performance.now();
   const tickInterval: number = 1000 / gameScope.fps.TargetFramerate;
 
@@ -20,9 +20,9 @@ const gameLoop = (gameScope: Scope): void => {
         gameScope.fps.calculateFPS(lastUpdate);
       };
 
-      gameScope.state = update(gameScope.state);
+      gameScope.state = update(gameScope.state, ControlsManager.activeUserActions);
       render(gameScope);
-      /* console.log('tick'); */
+      console.log('tick');
     };
   };
 

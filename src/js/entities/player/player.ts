@@ -1,7 +1,6 @@
 import { Player as PlayerInterface, PlayerConfig, PlayerState, Stats } from "../../utils/types/interfaces";
-import { Action, actions, ActionFunctions, ActionStates, PlayerObject } from "../../utils/types/types";
-import { controlsManager } from "../../core/controls/controlsManager";
-class Player implements PlayerInterface {
+import { actions, Action, ActionFunctions, AllActions, ActionStates, PlayerObject } from "../../utils/types/types";
+export default class Player implements PlayerInterface {
   actions: ActionFunctions;
   config: PlayerConfig;
   stats: Stats;
@@ -12,12 +11,8 @@ class Player implements PlayerInterface {
     this.state = player.state;
 
     const actionObject = {} as ActionFunctions;
-    actions.forEach(action => {
-      if (typeof (this as any)[action] === 'function') {
-        actionObject[action] = this[action].bind(this);
-      } else {
-        console.warn(`Action ${action} is not a function on Player`);
-      }
+    actions.player.forEach(action => {
+      actionObject[action] = this[action].bind(this);
     });
     this.actions = actionObject;
     this.config = player.config;
@@ -57,8 +52,8 @@ class Player implements PlayerInterface {
     const rightOffset = this.state.position.x + this.horizontalOffset;
     return this.state.position.x + rightOffset;
   };
-  public update(collisionStates: ActionStates): void {
-    controlsManager.activeUserActions.forEach(action => {
+  public update(collisionStates: ActionStates, activeActions: AllActions[]): void {
+    activeActions.forEach(action => {
       if (this.actions[action] && !collisionStates[action as Action]) {
         this.actions[action]();
       }
@@ -84,5 +79,3 @@ class Player implements PlayerInterface {
     context.setTransform(1, 0, 0, 1, 0, 0);
   };
 };
-
-export default Player;

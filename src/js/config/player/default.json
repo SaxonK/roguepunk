@@ -9,6 +9,7 @@
   },
   "stats": {
     "damage": 1,
+    "fireRate": 1,
     "hitpoints": 10,
     "resilience": 1,
     "speed": 1

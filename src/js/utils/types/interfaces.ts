@@ -1,4 +1,4 @@
-import { Action, ActionStates } from "./types";
+import { Action, AllActions, ActionStates } from "./types";
 
 export interface ActionBinding {
   [key: string]: Action;
@@ -14,6 +14,14 @@ export interface Camera {
   }
   update: (playerX: number, playerY: number) => void;
   render: (context: CanvasRenderingContext2D) => void;
+  resize: (width: number, height: number) => void;
+};
+export interface ControlsManager {
+  actionMapping: ActionBinding;
+  actionState: ActionStates;
+  setActionStateTrue: (key: string) => void;
+  setActionStateFalse: (key: string) => void;
+  activeUserActions: AllActions[];
 };
 export interface Cycle {
   frameCount: number;
@@ -34,6 +42,9 @@ export interface FpsManager {
   calculateFPS: (timestamp: EpochTimeStamp) => void;
   render: (context: CanvasRenderingContext2D, width: number) => void;
   toggleFramerateDisplay: () => void;
+};
+export interface InterfaceStates {
+  [key: string]: boolean | Record<string, boolean>[];
 };
 export interface Item {
   id: number;
@@ -58,7 +69,7 @@ export interface Player {
   boundaryPositionLeft: number;
   boundaryPositionRight: number;
   render: (context: CanvasRenderingContext2D) => void;
-  update: (collisionStates: ActionStates) => void;
+  update: (collisionStates: ActionStates, activeActions: AllActions[]) => void;
 };
 export interface PlayerConfig {
   width: number;
@@ -89,6 +100,7 @@ export interface States {
 };
 export interface Stats {
   damage: number;
+  fireRate: number;
   hitpoints: number;
   resilience: number;
   speed: number;
