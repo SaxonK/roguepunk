@@ -9,7 +9,7 @@ window.addEventListener("load", () => {
 
   /* Initialise Controls Manager */
   const keyboard = keyboardMapping as Record<string, Action>;
-  let KeyBinds = {} as Record<string, Action>;
+  const KeyBinds = {} as Record<string, Action>;
   Object.keys(keyboard).forEach(key => {
     if(typeof keyboard[key] === 'string' && allActions.includes(keyboard[key])) {
       KeyBinds[key] = keyboard[key]
@@ -24,10 +24,14 @@ window.addEventListener("load", () => {
   /* Initialise Main Menu */
   const mainMenuInterface = new MenuInterface(['Start Game', 'Toggle FPS', 'Settings'], game.fps.displayFramerate);
   mainMenuInterface.appendElementToParent(app);
-  mainMenuInterface.bindActionToButton('start-game', () => mainMenuInterface.play());
-  mainMenuInterface.bindActionToButton('start-game', () => game.start(controlsManager));
-  mainMenuInterface.bindActionToButton('toggle-fps', () => game.fps.toggleFramerateDisplay());
-  mainMenuInterface.bindActionToButton('toggle-fps', () => mainMenuInterface.toggleFpsDisplay(game.fps.displayFramerate));
+  mainMenuInterface.bindActionToButton('start-game', () => {
+    mainMenuInterface.play();
+    game.start(controlsManager);
+  });
+  mainMenuInterface.bindActionToButton('toggle-fps', () => {
+    game.fps.toggleFramerateDisplay();
+    mainMenuInterface.toggleFpsDisplay(game.fps.displayFramerate);
+  });
 
   /* Initialise Event Listeners */
   document.addEventListener('keydown', (event: KeyboardEvent) => {
