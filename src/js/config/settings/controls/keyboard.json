@@ -4,5 +4,6 @@
   "s": "moveDown",
   "d": "moveRight",
   "Enter": "select",
-  "Escape": "pause"
+  "Escape": "pause",
+  "Alt": "unlockHud"
 }
