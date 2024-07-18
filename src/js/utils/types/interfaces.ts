@@ -81,11 +81,33 @@ export interface PlayerConfig {
 };
 export interface PlayerState extends State {
   coins: number;
+  experience: number;
   items: Array<Item>;
   weapons: Array<Weapon>;
   render: () => void;
   update: () => void;
-}
+};
+export interface StatElementDetailed {
+  stat: string;
+  baseValue: number;
+  currentValue: number;
+  element: HTMLDivElement;
+};
+export interface StatElementExperience {
+  stat: string;
+  experience: number;
+  experienceForNextLevel: number;
+  element: HTMLDivElement;
+};
+export interface StatElementLevel {
+  stat: string;
+  level: number;
+  element: HTMLDivElement;
+};
+export interface StatElementWrapper {
+  stat: string;
+  element: HTMLDivElement;
+};
 export interface State {
   hitpoints: number;
   position: {

@@ -16,6 +16,7 @@
   },
   "state": {
     "coins": 0,
+    "startingExperience": 0,
     "hitpoints": 10,
     "items": [],
     "position": { 
