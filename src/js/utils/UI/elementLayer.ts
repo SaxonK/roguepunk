@@ -26,6 +26,32 @@ export default class ElementLayer {
     });
     this.element.appendChild(wrapper);
   };
+
+  public bindElementToAnchor(anchorPoint: AnchorPoints, statElement: StatElementDetailed | StatElementExperience | StatElementLevel | StatElementWrapper): void {
+    this.anchorPointOrder[anchorPoint].push(statElement);
+  };
+  public initialiseElementLayer(parent: HTMLElement): void {
+    for (const [anchor, stats] of Object.entries(this.anchorPointOrder)) {
+      stats.forEach(stat => {
+        this.addElementToLayer(anchor as AnchorPoints, stat.element)
+      });
+    };
+    parent.appendChild(this.element);
+  };
+  public toggleUnlockClass(unlock: boolean): void {
+    const action = unlock ? 'add' : 'remove';
+    this.element.querySelectorAll('.anchor-point').forEach(anchor => {
+      anchor.classList[action]('unlocked');
+    });
+    for (const stats of Object.values(this.anchorPointOrder)) {
+      stats.forEach(stat => {
+        stat.element.classList[action]('unlocked');
+        stat.element.setAttribute('draggable', unlock.toString());
+        stat.element.addEventListener('dragstart', this.onDragStart);
+      });
+    }
+  };
+
   private addElementToLayer(anchorPoint: AnchorPoints, statElement: HTMLDivElement): void {
     const anchorElement: HTMLDivElement = this.element.querySelector(`#${anchorPoint}`) as HTMLDivElement;
     anchorElement.appendChild(statElement);
@@ -65,31 +91,6 @@ export default class ElementLayer {
         this.anchorPointOrder[anchorPoint].push(statElement);
         break;
       }
-    }
-  };
-
-  public bindElementToAnchor(anchorPoint: AnchorPoints, statElement: StatElementDetailed | StatElementExperience | StatElementLevel | StatElementWrapper): void {
-    this.anchorPointOrder[anchorPoint].push(statElement);
-  };
-  public initialiseElementLayer(parent: HTMLElement): void {
-    for (const [anchor, stats] of Object.entries(this.anchorPointOrder)) {
-      stats.forEach(stat => {
-        this.addElementToLayer(anchor as AnchorPoints, stat.element)
-      });
-    };
-    parent.appendChild(this.element);
-  };
-  public toggleUnlockClass(unlock: boolean): void {
-    const action = unlock ? 'add' : 'remove';
-    this.element.querySelectorAll('.anchor-point').forEach(anchor => {
-      anchor.classList[action]('unlocked');
-    });
-    for (const stats of Object.values(this.anchorPointOrder)) {
-      stats.forEach(stat => {
-        stat.element.classList[action]('unlocked');
-        stat.element.setAttribute('draggable', unlock.toString());
-        stat.element.addEventListener('dragstart', this.onDragStart);
-      });
     }
   };
 };

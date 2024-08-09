@@ -1,6 +1,6 @@
 import { StatElementDetailed, StatElementExperience, StatElementLevel, StatElementWrapper as StatElementWrapperInterface } from "../types/interfaces";
 
-export default class StatElementWrapper {
+export default class StatElementWrapper implements StatElementWrapperInterface {
   stat: string;
   element: HTMLDivElement = document.createElement('div');
   statElements: (StatElementDetailed | StatElementExperience | StatElementLevel | StatElementWrapperInterface)[];

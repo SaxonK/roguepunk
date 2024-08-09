@@ -2,7 +2,7 @@ import { States } from "../utils/types/interfaces";
 import { AllActions } from "../utils/types/types";
 import { testTilemap } from "../world/initialiser";
 
-const update = (gameState: States, activeActions: AllActions[]): States => {
+const update = (gameState: States, activeActions: AllActions[], tickInterval: number): States => {
   let states = gameState;
   let player = states.player;
   let camera = states.camera;
@@ -10,12 +10,17 @@ const update = (gameState: States, activeActions: AllActions[]): States => {
   const mapWidth = testTilemap.tilemap.width;
   const mapHeight = testTilemap.tilemap.height;
 
-  if (states.hasOwnProperty('entities') && states.entities.length > 0) {
-    /* let entities = states.entities;
+  if (states.hasOwnProperty('enemies') && states.enemies.length > 0) {
+    let enemies = states.enemies;
     
-    entities.forEach(entity => {
-      entity.state.update();
-    }); */
+    enemies.forEach(enemy => {
+      if(enemy.hasReachTargetPosition) {
+        const newTile = testTilemap.getRandomTilePositionByLayer('Arena');
+        const newCanvasPosition = testTilemap.getCanvasPositionFromTilePosition(newTile);
+        enemy.updateTargetPosition(newCanvasPosition);
+      };
+      enemy.update(player, tickInterval);
+    });
   };
 
   const playerTilemapPosition = {
@@ -23,10 +28,10 @@ const update = (gameState: States, activeActions: AllActions[]): States => {
     y: Math.floor(((mapHeight / 2) / tileSize.height) + (player.state.position.y / (tileSize.height / 2)))
   };
   const playerBoundaryTilemapPositions = {
-    top: Math.floor(((mapHeight / 2) / tileSize.height) + (player.boundaryPositionTop / tileSize.height)),
-    bottom: Math.floor(((mapHeight / 2) / tileSize.height) + (player.boundaryPositionBottom / tileSize.height)),
-    left: Math.floor(((mapWidth / 2) / tileSize.width) + (player.boundaryPositionLeft / tileSize.width)),
-    right: Math.floor(((mapWidth / 2) / tileSize.width) + (player.boundaryPositionRight / tileSize.width))
+    top: Math.floor(((mapHeight / 2) / tileSize.height) + (player.boundingBox.min.y / tileSize.height)),
+    bottom: Math.floor(((mapHeight / 2) / tileSize.height) + (player.boundingBox.max.y / tileSize.height)),
+    left: Math.floor(((mapWidth / 2) / tileSize.width) + (player.boundingBox.min.x / tileSize.width)),
+    right: Math.floor(((mapWidth / 2) / tileSize.width) + (player.boundingBox.max.x / tileSize.width))
   };
   const playerBoundaryCollisions = {
     moveUp: false,
@@ -55,6 +60,7 @@ const update = (gameState: States, activeActions: AllActions[]): States => {
 
   player.update(playerBoundaryCollisions, activeActions);
   camera.update(player.state.position.x, player.state.position.y);
+  console.log(player.state.hitpoints);
   return states;
 };
 

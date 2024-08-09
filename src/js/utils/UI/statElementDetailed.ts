@@ -1,19 +1,24 @@
-import { StatElementDetailed as StatElementInterface } from "../types/interfaces";
-import { HtmlElementTypes } from "../types/types";
+import { EventEmitter, StatElementDetailed as StatElementInterface } from "../types/interfaces";
+import { ElementStatTypes, Events, HtmlElementTypes } from "../types/types";
 
 export default class StatElementDetailed implements StatElementInterface {
   stat: string;
+  displayName: string;
   baseValue: number;
   currentValue: number;
   element: HTMLDivElement;
 
-  constructor(stat: string, baseValue: number) {
+  private eventEmitter: EventEmitter<Events>;
+
+  constructor(stat: ElementStatTypes, baseValue: number, eventEmitter: EventEmitter<Events>, displayName?: string) {
     this.stat = stat;
+    this.displayName = displayName === undefined ? stat : displayName;
     this.baseValue = baseValue;
     this.currentValue = baseValue;
     this.element = document.createElement('div');
     this.element.classList.add('stat-element');
     this.element.id = stat.toLowerCase().replace(/ /g, '-');
+    this.eventEmitter = eventEmitter;
 
     const wrapper: HTMLDivElement = document.createElement('div');
     wrapper.classList.add('element-wrapper');
@@ -22,7 +27,7 @@ export default class StatElementDetailed implements StatElementInterface {
     wrapper.appendChild(this.createInnerElement(
       ['stat-label'], 
       'span', 
-      `${this.stat}:`
+      `${this.displayName}:`
     ));
     wrapper.appendChild(this.createInnerElement(
       ['current-value'], 
@@ -49,6 +54,7 @@ export default class StatElementDetailed implements StatElementInterface {
     ));
     this.element.appendChild(wrapper);
     this.update(this.currentValue);
+    this.eventEmitter.on(`${stat}Changed`, (data) => this.update(data));
   };
 
   private createInnerElement(classList: string[], tag: HtmlElementTypes, value: string = ''): HTMLElement {
@@ -58,24 +64,39 @@ export default class StatElementDetailed implements StatElementInterface {
 
     return element;
   };
-  private currentValueChange(value: number): void {
-    const difference: string =  (value - this.currentValue).toLocaleString();
+  private currentValueChange(value: number): number {
+    const difference: number =  (value - this.currentValue);
     const element: HTMLDivElement = this.element.querySelector('.value-change') as HTMLDivElement;
 
-    element.innerText = difference;
-  }
+    element.innerText = difference.toLocaleString();
+
+    return difference;
+  };
   private get currentValuePercentage(): number {
     return (this.currentValue / this.baseValue) * 100;
-  }
+  };
   public update(value: number): void {
-    this.currentValueChange(value);
+    const currentValueElement: HTMLDivElement = this.element.querySelector('.current-value') as HTMLDivElement;
     const valueChangeElement: HTMLDivElement = this.element.querySelector('.value-change') as HTMLDivElement;
     const backgroundProgress: HTMLDivElement = this.element.querySelector('.background-progress') as HTMLDivElement;
-    valueChangeElement.classList.add('visible');
+    const valueChange: number = this.currentValueChange(value);
+
     this.currentValue = value;
+    currentValueElement.innerText = this.currentValue.toLocaleString();
     backgroundProgress.style['width'] = `${this.currentValuePercentage}%`;
+
+    if(Math.sign(valueChange) === 1) {
+      this.element.classList.add('heal');
+      valueChangeElement.classList.add('visible');
+    } else if(Math.sign(valueChange) === -1) {
+      this.element.classList.add('damage');
+      valueChangeElement.classList.add('visible');
+    };
+
     setTimeout(() => {
       valueChangeElement.classList.remove('visible');
+      this.element.classList.remove('heal');
+      this.element.classList.remove('damage');
     }, 2000);
   };
 };

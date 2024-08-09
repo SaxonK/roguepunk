@@ -1,8 +1,12 @@
-import { Action, AllActions, ActionStates } from "./types";
+import { Action, AllActions, ActionStates, BaseCombatType, BaseMovementType, Coordinates } from "./types";
 
 export interface ActionBinding {
   [key: string]: Action;
 };
+export interface BoundingBox {
+  min: Coordinates,
+  max: Coordinates
+}
 export interface Camera {
   x: number;
   y: number;
@@ -15,6 +19,14 @@ export interface Camera {
   update: (playerX: number, playerY: number) => void;
   render: (context: CanvasRenderingContext2D) => void;
   resize: (width: number, height: number) => void;
+};
+export interface Config {
+  width: number;
+  height: number;
+  offset: {
+    x: number;
+    y: number;
+  };
 };
 export interface ControlsManager {
   actionMapping: ActionBinding;
@@ -31,10 +43,34 @@ export interface Cycle {
 export interface Cycles {
   [key: string]: Cycle;
 };
+export interface Enemy extends Entity {
+  config: EnemyConfig;
+  hasReachTargetPosition: boolean;
+  state: EnemyState;
+  stats: EnemyStats;
+  update: (player: Player, tickInterval: number) => void;
+  updateTargetPosition: (newTarget: Coordinates) => void;
+};
+export interface EnemyConfig extends Config {
+  combat: BaseCombatType;
+  movement: BaseMovementType;
+};
+export interface EnemyState extends State {
+  effects: StatusEffects[];
+};
+export interface EnemyStats extends Stats {
+  experience: number;
+};
 export interface Entity {
-  id: number;
+  config: Config;
   stats: Stats;
-  state: State;
+  boundingBox: BoundingBox;
+  render: (context: CanvasRenderingContext2D) => void;
+};
+export interface EventEmitter<Events extends Record<string, any>> {
+  on<K extends keyof Events>(event: K, listener: (data: Events[K]) => void): void;
+  off<K extends keyof Events>(event: K, listener: (data: Events[K]) => void): void;
+  emit<K extends keyof Events>(event: K, data: Events[K]): void;
 };
 export interface FpsManager {
   displayFramerate: boolean;
@@ -60,24 +96,10 @@ export interface Map {
   columns: number;
   rows: number;
 };
-export interface Player {
-  config: PlayerConfig;
-  stats: Stats;
+export interface Player extends Entity {
   state: PlayerState;
-  boundaryPositionTop: number;
-  boundaryPositionBottom: number;
-  boundaryPositionLeft: number;
-  boundaryPositionRight: number;
-  render: (context: CanvasRenderingContext2D) => void;
+  takeDamage: (damage: number) => void;
   update: (collisionStates: ActionStates, activeActions: AllActions[]) => void;
-};
-export interface PlayerConfig {
-  width: number;
-  height: number;
-  offset: {
-    x: number;
-    y: number;
-  };
 };
 export interface PlayerState extends State {
   coins: number;
@@ -89,20 +111,24 @@ export interface PlayerState extends State {
 };
 export interface StatElementDetailed {
   stat: string;
+  displayName: string;
   baseValue: number;
   currentValue: number;
   element: HTMLDivElement;
+  update: (value: number) => void;
 };
 export interface StatElementExperience {
   stat: string;
   experience: number;
   experienceForNextLevel: number;
   element: HTMLDivElement;
+  update: (value: number) => void;
 };
 export interface StatElementLevel {
   stat: string;
   level: number;
   element: HTMLDivElement;
+  update: (value: number) => void;
 };
 export interface StatElementWrapper {
   stat: string;
@@ -117,15 +143,22 @@ export interface State {
 };
 export interface States {
   camera: Camera;
-  entities: Array<Entity>;
+  enemies: Enemy[];
   player: Player;
 };
 export interface Stats {
   damage: number;
   fireRate: number;
   hitpoints: number;
+  range: number;
   resilience: number;
   speed: number;
+};
+export interface StatusEffects {
+  damage: number;
+  duration: number;
+  name: string;
+  startTime: Date;
 };
 export interface Scope {
   viewport: HTMLCanvasElement;
@@ -145,6 +178,8 @@ export interface Tilemap {
   tile: Tile;
   tileCount: number;
   layers: Array<Layer>;
+  getCanvasPositionFromTilePosition: (tilePosition: Coordinates) => Coordinates;
+  getRandomTilePositionByLayer: (layerName: string) => Coordinates;
 };
 export interface TilePlacement {
   id: string;

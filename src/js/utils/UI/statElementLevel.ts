@@ -1,7 +1,7 @@
 import { HtmlElementTypes } from "../types/types";
 
 export default class StatElementLevel {
-  stat: string = 'Level';
+  stat: string = 'level';
   level: number;
   element: HTMLDivElement;
 
@@ -31,7 +31,7 @@ export default class StatElementLevel {
 
     return element;
   };
-  public update(level: number): void {
-    this.level = level;
+  public update(value: number): void {
+    this.level = value;
   };
 };

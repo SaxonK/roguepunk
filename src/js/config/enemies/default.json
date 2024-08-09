@@ -1,29 +1,28 @@
 {
   "config": {
+    "combat": "melee",
+    "movement": "wander",
     "width": 32,
-    "height": 64,
+    "height": 32,
     "offset": {
       "x": 0,
       "y": 0 
     }
   },
   "stats": {
-    "damage": 1,
-    "fireRate": 1,
+    "experience": 10,
+    "damage": 2,
+    "fireRate": 0.025,
     "hitpoints": 10,
-    "range": 1,
+    "range": 8,
     "resilience": 1,
     "speed": 1
   },
   "state": {
-    "coins": 0,
-    "startingExperience": 0,
     "hitpoints": 10,
-    "items": [],
     "position": { 
       "x": 0, 
-      "y": 0 
-    },
-    "weapons": []
+      "y": 0
+    }
   }
 }
