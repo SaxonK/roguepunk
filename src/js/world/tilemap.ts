@@ -1,5 +1,5 @@
-import { Layer, Map, Tile } from "../utils/types/interfaces";
-import { TilemapConfiguration } from "../utils/types/types";
+import { Layer, Map, Tile, TilePlacement } from "../utils/types/interfaces";
+import { Coordinates, TilemapConfiguration } from "../utils/types/types";
 
 class Tilemap {
   private scale: number = 3;
@@ -32,14 +32,14 @@ class Tilemap {
     };
   };
 
-  get scaledTileSize() {
+  public get scaledTileSize() {
     return {
       width: this.tileConfig.width * this.scale,
       height: this.tileConfig.height * this.scale
     };
   };
 
-  checkCollision(x: number, y: number): boolean {
+  public checkCollision(x: number, y: number): boolean {
     let boundaryLayer = this.layers.find(boundary => boundary.collider);
     let isColliding = boundaryLayer?.tiles.some(tile => tile.x === x && tile.y === y);
 
@@ -47,8 +47,33 @@ class Tilemap {
 
     return false;
   };
+  public get centreTilesPosition(): Coordinates {
+    return {
+      x: this.mapConfig.columns / 2,
+      y: this.mapConfig.rows / 2
+    };
+  };
+  public getCanvasPositionFromTilePosition(tilePosition: Coordinates): Coordinates {
+    const tileX = (tilePosition.x - this.centreTilesPosition.x) * this.scaledTileSize.width + (this.scaledTileSize.width / 2);
+    const tileY = (tilePosition.y - this.centreTilesPosition.y) * this.scaledTileSize.height + (this.scaledTileSize.height / 2);
+    return {
+      x: Math.floor(tileX),
+      y: Math.floor(tileY)
+    };
+  }
+  public getRandomTilePositionByLayer(layerName: string): Coordinates {
+    const layer: Layer = this.layers.find(layer => layer.name === layerName) as Layer;
 
-  render(destinationCanvas: CanvasRenderingContext2D) {
+    const min = Math.ceil(0);
+    const max = Math.floor(layer.tiles.length - 1);
+    const randomIndex: number = Math.floor(Math.random() * (max - min + 1)) + min;
+    
+    const randomTile: TilePlacement = layer.tiles[randomIndex];
+    const { id, ...position } = randomTile;
+    return position;
+  };
+
+  public render(destinationCanvas: CanvasRenderingContext2D) {
     const width = this.tilemap.width / 2;
     const height = this.tilemap.height / 2;
     destinationCanvas.drawImage(this.tilemap, -Math.abs(width), -Math.abs(height));

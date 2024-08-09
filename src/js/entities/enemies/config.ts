@@ -1,6 +1,6 @@
 import { Config } from "../../utils/types/interfaces";
 
-class PlayerConfiguration implements Config {
+class EnemyConfiguration implements Config {
   width: number;
   height: number;
   offset: { x: number; y: number; };
@@ -12,4 +12,4 @@ class PlayerConfiguration implements Config {
   };
 };
 
-export default PlayerConfiguration;
+export default EnemyConfiguration;

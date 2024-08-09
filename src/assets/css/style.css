@@ -1,5 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Knewave&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
+@property --base-health-color-1 {
+  syntax: '<color>';
+  initial-value: #fdc094;
+  inherits: false;
+}
+@property --base-health-color-2 {
+  syntax: '<color>';
+  initial-value: #ff9a9a;
+  inherits: false;
+}
+@property --base-health-color-3 {
+  syntax: '<color>';
+  initial-value: #ff9190;
+  inherits: false;
+}
+@property --base-health-color-4 {
+  syntax: '<color>';
+  initial-value: #ff6b6b;
+  inherits: false;
+}
+
 body {
   margin: 0;
 }
@@ -186,10 +207,10 @@ body {
 }
 
 /* Stat Element - Health */
-#health.stat-element {
+#hitpoints.stat-element {
   color: rgba(78, 57, 196, 1);
 }
-#health.stat-element::after {
+#hitpoints.stat-element::after {
   content: "";
   position: absolute;
   width: 100%;
@@ -200,18 +221,23 @@ body {
   background: linear-gradient(#120c6e, #5e72eb);
   z-index: -1;
 }
-#health.stat-element .element-wrapper {
+#hitpoints.stat-element .element-wrapper {
   padding: 0.525rem 1rem;
   background: rgba(255, 227, 216, 0.75);
   border-radius: 0 0 16px 0;
   gap: 1rem;
 }
-#health.stat-element .element-wrapper .stat-label {
+#hitpoints.stat-element .element-wrapper .stat-label {
   margin-right: auto;
 }
-#health.stat-element .background-progress {
+#hitpoints.stat-element .background-progress {
   border-radius: 0 0 16px 0;
-  background: linear-gradient(#ff9190, #fdc094);
+  background: linear-gradient(var(--base-health-color-3), var(--base-health-color-1));
+  transition: all 600ms ease-out, --base-health-color-1 600ms ease-out, --base-health-color-3 600ms ease-out;
+}
+#hitpoints.stat-element.damage .background-progress {
+  background: linear-gradient(var(--base-health-color-4), var(--base-health-color-2));
+  transition: all 600ms ease-out, --base-health-color-2 600ms ease-out, --base-health-color-4 600ms ease-out;
 }
 
 /* Stat Element - Experience */

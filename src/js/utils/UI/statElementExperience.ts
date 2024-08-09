@@ -1,7 +1,8 @@
+import { StatElementExperience as StatElementInterface } from "../types/interfaces";
 import { HtmlElementTypes } from "../types/types";
 
-export default class StatElementExperience {
-  stat: string = 'Experience';
+export default class StatElementExperience implements StatElementInterface {
+  stat: string = 'experience';
   experience: number;
   experienceForNextLevel: number;
   element: HTMLDivElement;
@@ -35,9 +36,9 @@ export default class StatElementExperience {
   private get percentageToNextLevel(): number {
     return (this.experience / this.experienceForNextLevel) * 100;
   }
-  public update(experience: number): void {
+  public update(value: number): void {
     const backgroundProgress: HTMLDivElement = this.element.querySelector('.background-progress') as HTMLDivElement;
-    this.experience = experience;
+    this.experience = value;
     backgroundProgress.style['width'] = `${this.percentageToNextLevel}%`;
   };
 };

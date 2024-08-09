@@ -1,13 +1,24 @@
-import { Action, allActions } from "./utils/types/types";
+import { Action, allActions, Events } from "./utils/types/types";
+import { enemyFactoryFunction } from "./utils/functions/EnemyFactoryFunction";
+import { testTilemap } from "./world/initialiser";
+import Camera from "./entities/camera/camera";
+import ConfigPlayerDefault from "./config/player/default.json";
 import ControlsManager from "./core/controls/controlsManager";
 import ElementLayer from "./utils/UI/elementLayer";
+import Enemy from "./entities/enemies/enemy";
+import EventEmitter from "./utils/events/eventEmitter";
+import FPSManager from "./utils/FpsManager";
 import Game from "./core/game";
 import keyboardMapping from "./config/settings/controls/keyboard.json";
 import MenuInterface from './utils/UI/menuUI';
+import Player from "./entities/player/player";
+import PlayerConfiguration from "./entities/player/config";
+import PlayerState from "./entities/player/state";
 import StatElementDetailed from "./utils/UI/statElementDetailed";
 import StatElementExperience from "./utils/UI/statElementExperience";
 import StatElementLevel from "./utils/UI/statElementLevel";
 import StatElementWrapper from "./utils/UI/statElementWrapper";
+import Stats from "./entities/player/stats";
 
 window.addEventListener("load", () => {
   const app: HTMLElement = document.querySelector<HTMLDivElement>('#shootey-wavey') as HTMLElement;
@@ -23,14 +34,31 @@ window.addEventListener("load", () => {
   const controlsManager: ControlsManager = new ControlsManager(KeyBinds);
 
   /* Initialise Game */
-  const game: Game = new Game(60, true);
+  const camera: Camera = new Camera(0, 0, window.innerWidth, window.innerHeight);
+  let enemies: Enemy[];
+  enemyFactoryFunction('default', 5, testTilemap).then(result => {
+    enemies = result;
+    game.state.enemies = [...game.state.enemies, ...enemies];
+  });
+  enemyFactoryFunction('assassin', 2, testTilemap).then(result => {
+    enemies = result;
+    game.state.enemies = [...game.state.enemies, ...enemies];
+  });
+  const eventEmitter = new EventEmitter<Events>();
+  const fpsManager: FPSManager = new FPSManager(true, 60, window.performance.now());
+  const player: Player = new Player({
+    config: new PlayerConfiguration(ConfigPlayerDefault.config),
+    stats: new Stats(ConfigPlayerDefault.stats),
+    state: new PlayerState(ConfigPlayerDefault.state)
+  }, eventEmitter);
+  const game: Game = new Game(camera, fpsManager, player, eventEmitter);
   game.initialiseCanvas(app);
 
   /* Initialise Heads Up Display (HUD) layer */
   const elementLayer: ElementLayer = new ElementLayer();
   const expHealthCoupled = [
     new StatElementExperience(game.state.player.state.experience, 100),
-    new StatElementDetailed('Health', game.state.player.stats.hitpoints)
+    new StatElementDetailed('hitpoints', game.state.player.stats.hitpoints, eventEmitter, 'Health')
   ];
   const coreStatElements = [
     new StatElementLevel(1),

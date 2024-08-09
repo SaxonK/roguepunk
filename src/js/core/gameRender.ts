@@ -2,42 +2,46 @@ import { Scope } from "../utils/types/interfaces";
 import { testTilemap } from "../world/initialiser";
 
 const render = (gameScope: Scope): void => {
-  let width = gameScope.state.camera.width;
-  let height = gameScope.state.camera.height;
+  const { context, state, viewport } = gameScope;
+  const width = viewport.width;
+  const height = viewport.height;
 
-  // Clear the canvas
-  gameScope.context.clearRect(0, 0, width, height);
+  /* Clear the canvas */
+  context.clearRect(0, 0, width, height);
 
-  // Translate co-ordinates 0,0 to center of the viewport
-  gameScope.context.translate(width / 2, height / 2);
+  /* Calculate camera offsets */
+  const cameraOffsetX = state.camera.x - width / 2;
+  const cameraOffsetY = state.camera.y - height / 2;
 
-  // Render tilemap
-  testTilemap.render(gameScope.context);
+  /* Render tilemap at the origin (relative to camera) */
+  context.save();
+  context.translate(-cameraOffsetX, -cameraOffsetY);
+  testTilemap.render(context);
+  context.restore();
 
-  // Render Entities
-  if (gameScope.state.hasOwnProperty('entities') && gameScope.state.entities.length > 0) {
-    /* let entities = gameScope.state.entities;
+  /* Render entities (Player and Enemies) */
+  context.save();
+  context.translate(-cameraOffsetX, -cameraOffsetY);
 
-    entities.forEach(entity => {
-      entity.state.render();
-    }); */
-  };
+  /* Render Enemies */
+  if (state.enemies && state.enemies.length > 0) {
+    state.enemies.forEach(enemy => {
+      enemy.render(context);
+    });
+  }
 
-  // Render Player
-  gameScope.state.player.render(gameScope.context);
+  /* Render Player */
+  state.player.render(context);
 
-  // Render Camera
-  gameScope.state.camera.render(gameScope.context);
+  context.restore();
 
-  // Save the current state
-  gameScope.context.save();
+  /* Render Camera */
+  state.camera.render(context);
 
-  if(gameScope.fps.displayFramerate) {
-    gameScope.fps.render(gameScope.context, gameScope.viewport.width);
-  };
-  
-  // Restore the state to remove the camera transformation
-  gameScope.context.restore();
+  /* Render FPS */
+  if (gameScope.fps.displayFramerate) {
+    gameScope.fps.render(context, viewport.width);
+  }
 };
 
 export default render;

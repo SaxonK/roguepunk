@@ -1,0 +1,28 @@
+{
+  "config": {
+    "combat": "melee",
+    "movement": "target",
+    "width": 16,
+    "height": 16,
+    "offset": {
+      "x": 0,
+      "y": 0 
+    }
+  },
+  "stats": {
+    "experience": 25,
+    "damage": 1,
+    "fireRate": 0.05,
+    "hitpoints": 3,
+    "range": 4,
+    "resilience": 0.75,
+    "speed": 1
+  },
+  "state": {
+    "hitpoints": 10,
+    "position": { 
+      "x": 0, 
+      "y": 0
+    }
+  }
+}

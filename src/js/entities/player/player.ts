@@ -1,12 +1,14 @@
-import { Player as PlayerInterface, PlayerConfig, PlayerState, Stats } from "../../utils/types/interfaces";
-import { actions, Action, ActionFunctions, AllActions, ActionStates, PlayerObject } from "../../utils/types/types";
+import { BoundingBox, Config, EventEmitter, Player as PlayerInterface, PlayerState, Stats } from "../../utils/types/interfaces";
+import { actions, Action, ActionFunctions, AllActions, ActionStates, Events, PlayerObject } from "../../utils/types/types";
 export default class Player implements PlayerInterface {
   actions: ActionFunctions;
-  config: PlayerConfig;
+  config: Config;
   stats: Stats;
   state: PlayerState;
 
-  constructor(player: PlayerObject) {
+  private eventEmitter: EventEmitter<Events>;
+
+  constructor(player: PlayerObject, eventEmitter: EventEmitter<Events>) {
     this.stats = player.stats;
     this.state = player.state;
 
@@ -19,6 +21,8 @@ export default class Player implements PlayerInterface {
 
     this.config.offset.x = this.state.position.x - this.config.width / 2;
     this.config.offset.y = this.state.position.y - this.config.height / 2;
+
+    this.eventEmitter = eventEmitter;
   };
   private moveUp(): void {
     this.state.position.y -= this.stats.speed;
@@ -38,19 +42,21 @@ export default class Player implements PlayerInterface {
   private get verticalOffset(): number {
     return this.config.height / 2;
   };
-  public get boundaryPositionTop(): number {
-    return this.state.position.y + this.config.offset.y;
+  public get boundingBox(): BoundingBox {
+    return {
+      min: {
+        x: this.state.position.x + this.config.offset.x,
+        y: this.state.position.y + this.config.offset.y
+      },
+      max: {
+        x: this.state.position.x + (this.state.position.x + this.horizontalOffset),
+        y: this.state.position.y + (this.state.position.y + this.verticalOffset)
+      }
+    };
   };
-  public get boundaryPositionBottom(): number {
-    const bottomOffset = this.state.position.y + this.verticalOffset;
-    return this.state.position.y + bottomOffset;
-  };
-  public get boundaryPositionLeft(): number {
-    return this.state.position.x + this.config.offset.x;
-  };
-  public get boundaryPositionRight(): number {
-    const rightOffset = this.state.position.x + this.horizontalOffset;
-    return this.state.position.x + rightOffset;
+  public takeDamage(damage: number): void {
+    this.state.hitpoints -= damage;
+    this.eventEmitter.emit('hitpointsChanged', this.state.hitpoints);
   };
   public update(collisionStates: ActionStates, activeActions: AllActions[]): void {
     activeActions.forEach(action => {

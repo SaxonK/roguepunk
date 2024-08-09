@@ -20,9 +20,9 @@ const gameLoop = (gameScope: Scope, ControlsManager: ControlsManager): void => {
         gameScope.fps.calculateFPS(lastUpdate);
       };
 
-      gameScope.state = update(gameScope.state, ControlsManager.activeUserActions);
+      gameScope.state = update(gameScope.state, ControlsManager.activeUserActions, tickInterval);
       render(gameScope);
-      console.log('tick');
+      /* console.log('tick'); */
     };
   };
 
