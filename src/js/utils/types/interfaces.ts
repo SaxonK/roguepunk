@@ -109,6 +109,11 @@ export interface PlayerState extends State {
   render: () => void;
   update: () => void;
 };
+export interface ProjectileConfig extends Config {
+  speed: number;
+  damage: number;
+  range: number;
+};
 export interface StatElementDetailed {
   stat: string;
   displayName: string;
