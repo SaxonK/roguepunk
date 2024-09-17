@@ -27,7 +27,7 @@ export type BinaryArray = (0 | 1)[];
 export type Coordinates = Omit<TilePlacement, 'id'>;
 export type HtmlElementTypes = 'a' | 'div' | 'p' | 'span';
 export type EnemyObject = Omit<Enemy, 'update' | 'updateTargetPosition' | 'render' | 'boundingBox' | 'boundaryPositionTop' | 'boundaryPositionBottom' | 'boundaryPositionLeft' | 'boundaryPositionRight'>;
-export type PlayerObject = Omit<Player, 'update' | 'render' | 'boundaryPositionTop' | 'boundingBox' | 'boundaryPositionBottom' | 'boundaryPositionLeft' | 'boundaryPositionRight' | 'takeDamage'>;
+export type PlayerObject = Omit<Player, 'update' | 'render' | 'boundaryPositionTop' | 'boundingBox' | 'boundaryPositionBottom' | 'boundaryPositionLeft' | 'boundaryPositionRight' | 'takeDamage' | 'projectiles' | 'projectilePool' | 'dead'>;
 export type PlayerStateObject = Omit<PlayerState, 'update' | 'render' | 'experience'> & {
   startingExperience: number;
 };

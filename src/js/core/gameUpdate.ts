@@ -1,37 +1,28 @@
-import { States } from "../utils/types/interfaces";
-import { AllActions } from "../utils/types/types";
+import { BoundingBox, States } from "../utils/types/interfaces";
+import { AllActions, Coordinates } from "../utils/types/types";
 import { testTilemap } from "../world/initialiser";
 
-const update = (gameState: States, activeActions: AllActions[], tickInterval: number): States => {
+const update = (gameState: States, activeActions: AllActions[], mouseCanvasPosition: Coordinates): States => {
   let states = gameState;
+  let enemies = states.enemies.filter(enemy => !enemy.dead);
   let player = states.player;
   let camera = states.camera;
-  const tileSize = testTilemap.scaledTileSize;
-  const mapWidth = testTilemap.tilemap.width;
-  const mapHeight = testTilemap.tilemap.height;
 
-  if (states.hasOwnProperty('enemies') && states.enemies.length > 0) {
-    let enemies = states.enemies;
-    
+  if(states.hasOwnProperty('enemies') && states.enemies.length > 0) {
     enemies.forEach(enemy => {
       if(enemy.hasReachTargetPosition) {
         const newTile = testTilemap.getRandomTilePositionByLayer('Arena');
         const newCanvasPosition = testTilemap.getCanvasPositionFromTilePosition(newTile);
         enemy.updateTargetPosition(newCanvasPosition);
       };
-      enemy.update(player, tickInterval);
+      enemy.update(player);
     });
   };
 
-  const playerTilemapPosition = {
-    x: Math.floor(((mapWidth / 2) / tileSize.width) + (player.state.position.x / (tileSize.width / 2))),
-    y: Math.floor(((mapHeight / 2) / tileSize.height) + (player.state.position.y / (tileSize.height / 2)))
-  };
-  const playerBoundaryTilemapPositions = {
-    top: Math.floor(((mapHeight / 2) / tileSize.height) + (player.boundingBox.min.y / tileSize.height)),
-    bottom: Math.floor(((mapHeight / 2) / tileSize.height) + (player.boundingBox.max.y / tileSize.height)),
-    left: Math.floor(((mapWidth / 2) / tileSize.width) + (player.boundingBox.min.x / tileSize.width)),
-    right: Math.floor(((mapWidth / 2) / tileSize.width) + (player.boundingBox.max.x / tileSize.width))
+  const playerTilemapPosition: Coordinates = testTilemap.getTilePositionFromCanvasPosition(player.state.position);
+  const playerBoundaryTilemapPositions: BoundingBox = {
+    min: testTilemap.getTilePositionFromCanvasPosition(player.boundingBox.min),
+    max: testTilemap.getTilePositionFromCanvasPosition(player.boundingBox.max)
   };
   const playerBoundaryCollisions = {
     moveUp: false,
@@ -44,23 +35,23 @@ const update = (gameState: States, activeActions: AllActions[], tickInterval: nu
   activeActions.forEach(action => {
     switch(action) {
       case "moveUp":
-        playerBoundaryCollisions[action] = testTilemap.checkCollision(playerTilemapPosition.x, playerBoundaryTilemapPositions.top);
+        playerBoundaryCollisions[action] = testTilemap.checkCollision(playerTilemapPosition.x, playerTilemapPosition.y);
         break;
       case "moveDown":
-        playerBoundaryCollisions[action] = testTilemap.checkCollision(playerTilemapPosition.x, playerBoundaryTilemapPositions.bottom);
+        playerBoundaryCollisions[action] = testTilemap.checkCollision(playerTilemapPosition.x, playerBoundaryTilemapPositions.max.y);
         break;
       case "moveLeft":
-        playerBoundaryCollisions[action] = testTilemap.checkCollision(playerBoundaryTilemapPositions.left, playerTilemapPosition.y);
+        playerBoundaryCollisions[action] = testTilemap.checkCollision(playerBoundaryTilemapPositions.min.x, playerBoundaryTilemapPositions.max.y);
         break;
       case "moveRight":
-        playerBoundaryCollisions[action] = testTilemap.checkCollision(playerBoundaryTilemapPositions.right, playerTilemapPosition.y);
+        playerBoundaryCollisions[action] = testTilemap.checkCollision(playerBoundaryTilemapPositions.max.x, playerBoundaryTilemapPositions.max.y);
         break;
     }
   });
 
-  player.update(playerBoundaryCollisions, activeActions);
+  player.update(playerBoundaryCollisions, activeActions, mouseCanvasPosition, enemies);
   camera.update(player.state.position.x, player.state.position.y);
-  console.log(player.state.hitpoints);
+
   return states;
 };
 

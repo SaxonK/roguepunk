@@ -16,8 +16,8 @@ class Camera implements cameraInterface {
     this.width = width;
     this.height = height;
     this.offset = {
-      x: 1.5,
-      y: 2
+      x: 1.25,
+      y: 1.25
     };
   };
 
@@ -28,6 +28,7 @@ class Camera implements cameraInterface {
     const offsetX = centerX - this.x - this.width / 2;
     const offsetY = centerY - this.y - this.height / 2;
 
+    context.save();
     context.translate(offsetX, offsetY);
 
     context.strokeStyle = 'rgb(255 0 255 / 50%)';
@@ -37,12 +38,12 @@ class Camera implements cameraInterface {
       this.width,
       this.height
     );
-
-    context.setTransform(1, 0, 0, 1, -1 * this.x, -1 * this.y);
+    
+    context.restore();
   };
   public update(playerX: number, playerY: number): void {
-    this.x = playerX * this.offset.x;
-    this.y = playerY * this.offset.y;
+    this.x = playerX / this.offset.x;
+    this.y = playerY / this.offset.y;
   };
   public resize(width: number, height: number): void {
     this.width = width;

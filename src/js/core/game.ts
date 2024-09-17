@@ -1,5 +1,5 @@
 import { Camera, ControlsManager, Enemy, EventEmitter, FpsManager, Player, Scope, States } from "../utils/types/interfaces";
-import { Events } from "../utils/types/types";
+import { Coordinates, Events } from "../utils/types/types";
 import gameLoop from "./gameLoop";
 
 export default class Game implements Scope {
@@ -26,11 +26,19 @@ export default class Game implements Scope {
     this.state = {
       camera: camera,
       enemies: [],
-      player: player
+      player: player,
+      mouse: { x: 0, y: 0 }
     };
 
     this.eventEmitter = eventEmitter;
   }
+
+  public get mouseCanvasPosition(): Coordinates {
+    return {
+      x: Math.floor((this.state.mouse.x + (this.state.camera.x))),
+      y: Math.floor((this.state.mouse.y + (this.state.camera.y)))
+    };
+  };
 
   private setupViewport(): void {
     this.viewport.width = window.innerWidth;
@@ -54,11 +62,17 @@ export default class Game implements Scope {
     this.state.enemies = enemies;
   };
 
+  public setMousePosition(event: MouseEvent) {
+    const viewportBounds = this.viewport.getBoundingClientRect();
+    this.state.mouse.x = event.clientX - (viewportBounds.width / 2);
+    this.state.mouse.y = event.clientY - (viewportBounds.height / 2);
+  };
+
   public start(controlsManager: ControlsManager): void {
     this.updateViewport();
     gameLoop(this, controlsManager);
     this.eventEmitter.emit('gameStateChanged', true);
-  }
+  };
 
   private updateViewport = (): void => {
     if (this.animationFrameId !== 0 && this.animationFrameId !== -1) {
@@ -66,5 +80,5 @@ export default class Game implements Scope {
       this.viewport.height = window.innerHeight;
       this.state.camera.resize(window.innerWidth, window.innerHeight);
     }
-  }
+  };
 };

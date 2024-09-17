@@ -21,6 +21,7 @@ export interface Camera {
   resize: (width: number, height: number) => void;
 };
 export interface Config {
+  name: string;
   width: number;
   height: number;
   offset: {
@@ -48,7 +49,7 @@ export interface Enemy extends Entity {
   hasReachTargetPosition: boolean;
   state: EnemyState;
   stats: EnemyStats;
-  update: (player: Player, tickInterval: number) => void;
+  update: (player: Player) => void;
   updateTargetPosition: (newTarget: Coordinates) => void;
 };
 export interface EnemyConfig extends Config {
@@ -63,9 +64,13 @@ export interface EnemyStats extends Stats {
 };
 export interface Entity {
   config: Config;
+  dead: boolean;
+  projectiles: Projectile[];
+  projectilePool: ProjectilePool;
   stats: Stats;
   boundingBox: BoundingBox;
   render: (context: CanvasRenderingContext2D) => void;
+  takeDamage: (damage: number) => void;
 };
 export interface EventEmitter<Events extends Record<string, any>> {
   on<K extends keyof Events>(event: K, listener: (data: Events[K]) => void): void;
@@ -97,9 +102,12 @@ export interface Map {
   rows: number;
 };
 export interface Player extends Entity {
+  config: PlayerConfig;
   state: PlayerState;
-  takeDamage: (damage: number) => void;
-  update: (collisionStates: ActionStates, activeActions: AllActions[]) => void;
+  update: (collisionStates: ActionStates, activeActions: AllActions[], cursorPosition: Coordinates, enemies: Enemy[]) => void;
+};
+export interface PlayerConfig extends Config {
+  combat: BaseCombatType;
 };
 export interface PlayerState extends State {
   coins: number;
@@ -108,6 +116,28 @@ export interface PlayerState extends State {
   weapons: Array<Weapon>;
   render: () => void;
   update: () => void;
+};
+export interface Projectile {
+  boundingBox: BoundingBox;
+  expired: boolean;
+  attack: (target: Player | Enemy) => void;
+  update: (targetPosition: Coordinates) => void;
+  render: (context: CanvasRenderingContext2D, offset: Coordinates) => void;
+  reset: (config: ProjectileConfig) => void;
+};
+export interface ProjectileConfig extends Config {
+  damage: number;
+  pierce: number;
+  range: number;
+  speed: number;
+};
+export interface ProjectilePool {
+  getProjectile: (config: ProjectileConfig, position: Coordinates, entityConfig: Config) => Projectile;
+  returnProjectile: (projectile: Projectile) => void;
+};
+export interface ProjectileState {
+  pierce: number;
+  position: Coordinates;
 };
 export interface StatElementDetailed {
   stat: string;
@@ -145,6 +175,7 @@ export interface States {
   camera: Camera;
   enemies: Enemy[];
   player: Player;
+  mouse: Coordinates;
 };
 export interface Stats {
   damage: number;
@@ -166,6 +197,7 @@ export interface Scope {
   fps: FpsManager;
   animationFrameId: number;
   state: States;
+  mouseCanvasPosition: Coordinates;
 };
 export interface Tile {
   width: number;
