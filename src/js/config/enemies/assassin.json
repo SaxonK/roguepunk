@@ -1,9 +1,10 @@
 {
   "config": {
+    "name": "assassin",
     "combat": "melee",
     "movement": "target",
-    "width": 16,
-    "height": 16,
+    "width": 24,
+    "height": 24,
     "offset": {
       "x": 0,
       "y": 0 
@@ -12,7 +13,7 @@
   "stats": {
     "experience": 25,
     "damage": 1,
-    "fireRate": 0.05,
+    "fireRate": 4,
     "hitpoints": 3,
     "range": 4,
     "resilience": 0.75,

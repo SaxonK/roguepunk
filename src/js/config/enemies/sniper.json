@@ -1,31 +1,29 @@
 {
   "config": {
-    "name": "player",
+    "name": "sniper",
     "combat": "range",
-    "width": 32,
-    "height": 64,
+    "movement": "none",
+    "width": 16,
+    "height": 32,
     "offset": {
       "x": 0,
       "y": 0 
     }
   },
   "stats": {
-    "damage": 10,
-    "fireRate": 1,
+    "experience": 25,
+    "damage": 5,
+    "fireRate": 0.5,
     "hitpoints": 10,
-    "range": 5,
+    "range": 20,
     "resilience": 1,
-    "speed": 2
+    "speed": 5
   },
   "state": {
-    "coins": 0,
-    "startingExperience": 0,
     "hitpoints": 10,
-    "items": [],
     "position": { 
       "x": 0, 
-      "y": 0 
-    },
-    "weapons": []
+      "y": 0
+    }
   }
 }

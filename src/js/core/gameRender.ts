@@ -24,16 +24,41 @@ const render = (gameScope: Scope): void => {
   context.translate(-cameraOffsetX, -cameraOffsetY);
 
   /* Render Enemies */
-  if (state.enemies && state.enemies.length > 0) {
-    state.enemies.forEach(enemy => {
+  let enemies = state.enemies.filter(enemy => !enemy.dead);
+  if (enemies && enemies.length > 0) {
+    enemies.forEach(enemy => {
       enemy.render(context);
     });
-  }
+  };
+
+  /* Render Enemy Projectiles */
+  let rangeEnemies = enemies.filter(enemy => enemy.config.combat === 'range');
+  rangeEnemies.forEach(enemy => {
+    if(enemy.projectiles.length > 0) {
+      enemy.projectiles.forEach(projectile => {
+        projectile.render(context, state.player.config.offset);
+      });
+    };
+  });
 
   /* Render Player */
   state.player.render(context);
 
-  context.restore();
+  /* Render Player Projectiles */
+  if(state.player.projectiles.length > 0) {
+    state.player.projectiles.forEach(projectile => {
+      projectile.render(context, state.player.config.offset);
+    });
+  };
+
+  context.fillStyle = '#fff';
+  context.fillText(
+    `${gameScope.mouseCanvasPosition.x},${gameScope.mouseCanvasPosition.y}`,
+    gameScope.mouseCanvasPosition.x - 16,
+    gameScope.mouseCanvasPosition.y - 16
+  );
+
+  context.restore();  
 
   /* Render Camera */
   state.camera.render(context);

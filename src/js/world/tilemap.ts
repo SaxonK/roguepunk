@@ -54,18 +54,26 @@ class Tilemap {
     };
   };
   public getCanvasPositionFromTilePosition(tilePosition: Coordinates): Coordinates {
-    const tileX = (tilePosition.x - this.centreTilesPosition.x) * this.scaledTileSize.width + (this.scaledTileSize.width / 2);
-    const tileY = (tilePosition.y - this.centreTilesPosition.y) * this.scaledTileSize.height + (this.scaledTileSize.height / 2);
+    const tileX = (tilePosition.x - this.centreTilesPosition.x) * this.scaledTileSize.width;
+    const tileY = (tilePosition.y - this.centreTilesPosition.y) * this.scaledTileSize.height;
     return {
       x: Math.floor(tileX),
       y: Math.floor(tileY)
     };
-  }
+  };
+  public getTilePositionFromCanvasPosition(canvasPosition: Coordinates): Coordinates {
+    const tileX = Math.floor(canvasPosition.x / this.scaledTileSize.width) + this.centreTilesPosition.x;
+    const tileY = Math.floor(canvasPosition.y / this.scaledTileSize.height) + this.centreTilesPosition.y;
+    return {
+      x: tileX,
+      y: tileY
+    };
+  };
   public getRandomTilePositionByLayer(layerName: string): Coordinates {
     const layer: Layer = this.layers.find(layer => layer.name === layerName) as Layer;
 
-    const min = Math.ceil(0);
-    const max = Math.floor(layer.tiles.length - 1);
+    const min: number = Math.ceil(0);
+    const max: number = Math.floor(layer.tiles.length - 1);
     const randomIndex: number = Math.floor(Math.random() * (max - min + 1)) + min;
     
     const randomTile: TilePlacement = layer.tiles[randomIndex];
@@ -120,6 +128,13 @@ class Tilemap {
           tile.y * (this.tileConfig.height * this.scale),
           this.tileConfig.width * this.scale,
           this.tileConfig.height * this.scale
+        );
+        context.font = "8px serif";
+        context.fillStyle = '#00FFFF';
+        context.fillText(
+          `${tile.x},${tile.y}`,
+          tile.x * (this.tileConfig.width * this.scale) + 1,
+          tile.y * (this.tileConfig.height * this.scale) + 11
         );
       });
     });

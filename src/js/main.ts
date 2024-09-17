@@ -1,3 +1,4 @@
+import { PlayerConfig } from "./utils/types/interfaces";
 import { Action, allActions, Events } from "./utils/types/types";
 import { enemyFactoryFunction } from "./utils/functions/EnemyFactoryFunction";
 import { testTilemap } from "./world/initialiser";
@@ -14,6 +15,7 @@ import MenuInterface from './utils/UI/menuUI';
 import Player from "./entities/player/player";
 import PlayerConfiguration from "./entities/player/config";
 import PlayerState from "./entities/player/state";
+import projectilePool from "./entities/projectiles/initialiser";
 import StatElementDetailed from "./utils/UI/statElementDetailed";
 import StatElementExperience from "./utils/UI/statElementExperience";
 import StatElementLevel from "./utils/UI/statElementLevel";
@@ -36,21 +38,25 @@ window.addEventListener("load", () => {
   /* Initialise Game */
   const camera: Camera = new Camera(0, 0, window.innerWidth, window.innerHeight);
   let enemies: Enemy[];
-  enemyFactoryFunction('default', 5, testTilemap).then(result => {
+  enemyFactoryFunction('grunt', 10, testTilemap).then(result => {
     enemies = result;
     game.state.enemies = [...game.state.enemies, ...enemies];
   });
-  enemyFactoryFunction('assassin', 2, testTilemap).then(result => {
+  enemyFactoryFunction('assassin', 5, testTilemap).then(result => {
+    enemies = result;
+    game.state.enemies = [...game.state.enemies, ...enemies];
+  });
+  enemyFactoryFunction('sniper', 2, testTilemap).then(result => {
     enemies = result;
     game.state.enemies = [...game.state.enemies, ...enemies];
   });
   const eventEmitter = new EventEmitter<Events>();
   const fpsManager: FPSManager = new FPSManager(true, 60, window.performance.now());
   const player: Player = new Player({
-    config: new PlayerConfiguration(ConfigPlayerDefault.config),
+    config: new PlayerConfiguration(ConfigPlayerDefault.config as PlayerConfig),
     stats: new Stats(ConfigPlayerDefault.stats),
     state: new PlayerState(ConfigPlayerDefault.state)
-  }, eventEmitter);
+  }, eventEmitter, projectilePool);
   const game: Game = new Game(camera, fpsManager, player, eventEmitter);
   game.initialiseCanvas(app);
 
@@ -113,4 +119,5 @@ window.addEventListener("load", () => {
       mainMenuInterface.pause();
     }
   });
+  document.addEventListener('mousemove',(event: MouseEvent) => game.setMousePosition(event));
 });
