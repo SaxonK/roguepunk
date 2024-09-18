@@ -1,5 +1,5 @@
-import { BoundingBox, Enemy as EnemyInterface, EnemyConfig, EnemyState, Player, EnemyStats, ProjectilePool } from "../../utils/types/interfaces";
-import { BaseMovementType, Coordinates, EnemyObject } from "../../utils/types/types";
+import { BoundingBox, Enemy as EnemyInterface, EnemyConfig, EnemyState, Player, EnemyStats, EventEmitter, ProjectilePool } from "../../utils/types/interfaces";
+import { BaseMovementType, Coordinates, EnemyObject, Events } from "../../utils/types/types";
 import Projectile from "../projectiles/projectile";
 export default class Enemy implements EnemyInterface {
   config: EnemyConfig;
@@ -8,13 +8,21 @@ export default class Enemy implements EnemyInterface {
   stats: EnemyStats;
   state: EnemyState;
 
+  private eventEmitter: EventEmitter<Events>;
   private targetPosition: Coordinates;
   private lastAttack: number = 0;
   private playerInRange: boolean = false;
   private currentColor: string = '#FF8A80';
 
-  constructor(enemy: EnemyObject, position: Coordinates, target: Coordinates = {x: 0, y: 0}, projectilePool: ProjectilePool) {
+  constructor(
+    enemy: EnemyObject, 
+    position: Coordinates, 
+    eventEmitter: EventEmitter<Events>,
+    projectilePool: ProjectilePool,
+    target: Coordinates = {x: 0, y: 0}
+  ) {
     this.config = enemy.config;
+    this.eventEmitter = eventEmitter;
     this.stats = enemy.stats;
     this.state = {
       effects: enemy.state.effects,
@@ -79,7 +87,9 @@ export default class Enemy implements EnemyInterface {
   /* Public Methods */
   public takeDamage(damage: number): void {
     this.state.hitpoints -= damage;
-    // this.eventEmitter.emit('hitpointsChanged', this.state.hitpoints);
+    if(this.dead) {
+      this.eventEmitter.emit('playerGainExperience', this.stats.experience);  
+    };
   };
   public render(context: CanvasRenderingContext2D): void {
     this.config.offset.x = this.state.position.x - this.horizontalOffset;
