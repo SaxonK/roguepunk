@@ -1,15 +1,19 @@
-import { HtmlElementTypes } from "../types/types";
+import { EventEmitter } from "../types/interfaces";
+import { ElementStatTypes, Events, HtmlElementTypes } from "../types/types";
 
 export default class StatElementLevel {
-  stat: string = 'level';
+  stat: ElementStatTypes = 'level';
   level: number;
   element: HTMLDivElement;
 
-  constructor(level: number) {
+  private eventEmitter: EventEmitter<Events>;
+
+  constructor(eventEmitter: EventEmitter<Events>, level: number) {
     this.level = level;
     this.element = document.createElement('div');
     this.element.classList.add('stat-element');
     this.element.id = this.stat.toLowerCase().replace(/ /g, '-');
+    this.eventEmitter = eventEmitter;
 
     const wrapper: HTMLDivElement = document.createElement('div');
     wrapper.classList.add('element-wrapper');
@@ -22,6 +26,7 @@ export default class StatElementLevel {
     ));
 
     this.element.appendChild(wrapper);
+    this.eventEmitter.on(`${this.stat}Changed`, (data) => this.update(data));
   };
 
   private createInnerElement(classList: string[], tag: HtmlElementTypes, value: string = ''): HTMLElement {
@@ -32,6 +37,8 @@ export default class StatElementLevel {
     return element;
   };
   public update(value: number): void {
+    const levelValueElement: HTMLDivElement = this.element.querySelector('.level-value') as HTMLDivElement;
     this.level = value;
+    levelValueElement.innerText = this.level.toLocaleString();
   };
 };

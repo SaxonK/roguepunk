@@ -2,7 +2,7 @@ import { EventEmitter, StatElementDetailed as StatElementInterface } from "../ty
 import { ElementStatTypes, Events, HtmlElementTypes } from "../types/types";
 
 export default class StatElementDetailed implements StatElementInterface {
-  stat: string;
+  stat: ElementStatTypes;
   displayName: string;
   baseValue: number;
   currentValue: number;

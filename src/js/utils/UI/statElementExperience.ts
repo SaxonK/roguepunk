@@ -1,13 +1,16 @@
-import { StatElementExperience as StatElementInterface } from "../types/interfaces";
-import { HtmlElementTypes } from "../types/types";
+import { EventEmitter, StatElementExperience as StatElementInterface } from "../types/interfaces";
+import { ElementStatTypes, Events, HtmlElementTypes } from "../types/types";
 
 export default class StatElementExperience implements StatElementInterface {
-  stat: string = 'experience';
+  stat: ElementStatTypes = 'experience';
   experience: number;
   experienceForNextLevel: number;
   element: HTMLDivElement;
 
-  constructor(experience: number, experienceForNextLevel: number) {
+  private eventEmitter: EventEmitter<Events>;
+
+  constructor(eventEmitter: EventEmitter<Events>, experience: number, experienceForNextLevel: number) {
+    this.eventEmitter = eventEmitter;
     this.experience = experience;
     this.experienceForNextLevel = experienceForNextLevel;
     this.element = document.createElement('div');
@@ -24,6 +27,8 @@ export default class StatElementExperience implements StatElementInterface {
     ));
     this.element.appendChild(wrapper);
     this.update(this.experience);
+    this.eventEmitter.on(`${this.stat}Changed`, (data) => this.update(data));
+    this.eventEmitter.on('experienceToNextLevelChanged', (data) => this.experienceForNextLevelUpdate(data));
   };
 
   private createInnerElement(classList: string[], tag: HtmlElementTypes, value: string = ''): HTMLElement {
@@ -38,7 +43,14 @@ export default class StatElementExperience implements StatElementInterface {
   }
   public update(value: number): void {
     const backgroundProgress: HTMLDivElement = this.element.querySelector('.background-progress') as HTMLDivElement;
-    this.experience = value;
+    this.experience += value;
+    backgroundProgress.style['width'] = `${this.percentageToNextLevel}%`;
+  };
+  public experienceForNextLevelUpdate(value: number): void {
+    const backgroundProgress: HTMLDivElement = this.element.querySelector('.background-progress') as HTMLDivElement;
+    const remainder = this.experience - this.experienceForNextLevel;
+    remainder > 0 ? this.experience = remainder : this.experience = 0;
+    this.experienceForNextLevel = value;
     backgroundProgress.style['width'] = `${this.percentageToNextLevel}%`;
   };
 };

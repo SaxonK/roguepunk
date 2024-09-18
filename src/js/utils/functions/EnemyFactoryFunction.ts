@@ -1,4 +1,5 @@
 import Enemy from "../../entities/enemies/enemy";
+import eventEmitter from "../../utils/events/initialiser";
 import projectilePool from "../../entities/projectiles/initialiser";
 import Tilemap from "../../world/tilemap";  
 
@@ -11,7 +12,7 @@ export async function enemyFactoryFunction(enemyType: string, count: number, til
     const randomTargetTile = tilemap.getRandomTilePositionByLayer('Arena');
     const randomPosition = tilemap.getCanvasPositionFromTilePosition(randomPositionTile);
     const randomTarget = tilemap.getCanvasPositionFromTilePosition(randomTargetTile);
-    const newEnemy = new Enemy(config, randomPosition, randomTarget, projectilePool);
+    const newEnemy = new Enemy(config, randomPosition, eventEmitter, projectilePool, randomTarget);
     enemies.push(newEnemy);
   };
 

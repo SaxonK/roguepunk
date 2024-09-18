@@ -97,6 +97,14 @@ export interface Layer {
   tiles: Array<TilePlacement>;
   collider: boolean;
 };
+export interface LevelSystem {
+  experience: number;
+  experienceToNextLevel: number;
+  level: number;
+  addExperience: (experience: number) => void;
+  reset: () => void;
+  setStartingExperience: (experience: number) => void;
+};
 export interface Map {
   columns: number;
   rows: number;
@@ -111,11 +119,9 @@ export interface PlayerConfig extends Config {
 };
 export interface PlayerState extends State {
   coins: number;
-  experience: number;
+  experience: LevelSystem;
   items: Array<Item>;
   weapons: Array<Weapon>;
-  render: () => void;
-  update: () => void;
 };
 export interface Projectile {
   boundingBox: BoundingBox;

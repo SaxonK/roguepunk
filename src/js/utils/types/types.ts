@@ -28,7 +28,7 @@ export type Coordinates = Omit<TilePlacement, 'id'>;
 export type HtmlElementTypes = 'a' | 'div' | 'p' | 'span';
 export type EnemyObject = Omit<Enemy, 'update' | 'updateTargetPosition' | 'render' | 'boundingBox' | 'boundaryPositionTop' | 'boundaryPositionBottom' | 'boundaryPositionLeft' | 'boundaryPositionRight'>;
 export type PlayerObject = Omit<Player, 'update' | 'render' | 'boundaryPositionTop' | 'boundingBox' | 'boundaryPositionBottom' | 'boundaryPositionLeft' | 'boundaryPositionRight' | 'takeDamage' | 'projectiles' | 'projectilePool' | 'dead'>;
-export type PlayerStateObject = Omit<PlayerState, 'update' | 'render' | 'experience'> & {
+export type PlayerStateObject = Omit<PlayerState, | 'experience'> & {
   startingExperience: number;
 };
 export type TilemapConfiguration = Omit<Tilemap, 'spritesheet' | 'tileCount' | 'getCanvasPositionFromTilePosition' | 'getRandomTilePositionByLayer'>;
@@ -36,9 +36,14 @@ export type TilemapConfiguration = Omit<Tilemap, 'spritesheet' | 'tileCount' | '
 export type InterfaceStates = string | boolean | { [key: string]: InterfaceStates };
 
 export type StatsAndStates = keyof Stats | keyof PlayerState;
-export type ElementStatTypes = Exclude<StatsAndStates, 'update' | 'render'>;
+export type ElementStatTypes = Exclude<StatsAndStates, 'update' | 'render'> | 'level';
 export type Events = {
   [K in keyof ElementStatTypes as `${ElementStatTypes}Changed`]: number;
 } & {
+  experienceReset: number;
   gameStateChanged: boolean;
+  levelChanged: number;
+  experienceToNextLevelChanged: number;
+  experienceToNextLevelReset: number;
+  playerGainExperience: number;
 };
