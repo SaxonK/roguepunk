@@ -4,7 +4,7 @@ import { testTilemap } from "../world/initialiser";
 
 const update = (gameState: States, activeActions: AllActions[], mouseCanvasPosition: Coordinates): States => {
   let states = gameState;
-  let enemies = states.enemies.filter(enemy => !enemy.dead);
+  let enemies = states.enemies.filter(enemy => !enemy.state.lifecycle.dead);
   let player = states.player;
   let camera = states.camera;
 
@@ -14,12 +14,13 @@ const update = (gameState: States, activeActions: AllActions[], mouseCanvasPosit
         const newTile = testTilemap.getRandomTilePositionByLayer('Arena');
         const newCanvasPosition = testTilemap.getCanvasPositionFromTilePosition(newTile);
         enemy.updateTargetPosition(newCanvasPosition);
+        enemy.setReachedTargetTime();
       };
       enemy.update(player);
     });
   };
 
-  const playerTilemapPosition: Coordinates = testTilemap.getTilePositionFromCanvasPosition(player.state.position);
+  const playerTilemapPosition: Coordinates = testTilemap.getTilePositionFromCanvasPosition(player.state.gameplay.position);
   const playerBoundaryTilemapPositions: BoundingBox = {
     min: testTilemap.getTilePositionFromCanvasPosition(player.boundingBox.min),
     max: testTilemap.getTilePositionFromCanvasPosition(player.boundingBox.max)
@@ -50,7 +51,7 @@ const update = (gameState: States, activeActions: AllActions[], mouseCanvasPosit
   });
 
   player.update(playerBoundaryCollisions, activeActions, mouseCanvasPosition, enemies);
-  camera.update(player.state.position.x, player.state.position.y);
+  camera.update(player.state.gameplay.position.x, player.state.gameplay.position.y);
 
   return states;
 };

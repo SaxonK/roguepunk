@@ -24,7 +24,7 @@ const render = (gameScope: Scope): void => {
   context.translate(-cameraOffsetX, -cameraOffsetY);
 
   /* Render Enemies */
-  let enemies = state.enemies.filter(enemy => !enemy.dead);
+  let enemies = state.enemies.filter(enemy => !enemy.state.lifecycle.dead);
   if (enemies && enemies.length > 0) {
     enemies.forEach(enemy => {
       enemy.render(context);

@@ -97,6 +97,6 @@ export default class StatElementDetailed implements StatElementInterface {
       valueChangeElement.classList.remove('visible');
       this.element.classList.remove('heal');
       this.element.classList.remove('damage');
-    }, 2000);
+    }, 500);
   };
 };

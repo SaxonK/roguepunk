@@ -1,4 +1,10 @@
+import { EnemyConfig, EnemyState as IEnemyState, EnemyStats as IEnemyStats } from "../types/interfaces";
+import { EnemyObject } from "../types/types";
+import AnimationHandler from "../../core/animation/animate";
 import Enemy from "../../entities/enemies/enemy";
+import EnemyConfiguration from "../../entities/enemies/config";
+import EnemyState from "../../entities/enemies/state";
+import EnemyStats from "../../entities/enemies/stats";
 import eventEmitter from "../../utils/events/initialiser";
 import projectilePool from "../../entities/projectiles/initialiser";
 import Tilemap from "../../world/tilemap";  
@@ -8,11 +14,21 @@ export async function enemyFactoryFunction(enemyType: string, count: number, til
   const enemies: Enemy[] = [];
   
   for(let i = 0; i < count; i++) {
-    const randomPositionTile = tilemap.getRandomTilePositionByLayer('Arena');
-    const randomTargetTile = tilemap.getRandomTilePositionByLayer('Arena');
-    const randomPosition = tilemap.getCanvasPositionFromTilePosition(randomPositionTile);
-    const randomTarget = tilemap.getCanvasPositionFromTilePosition(randomTargetTile);
-    const newEnemy = new Enemy(config, randomPosition, eventEmitter, projectilePool, randomTarget);
+    const randomiser = {
+      position: tilemap.getCanvasPositionFromTilePosition(tilemap.getRandomTilePositionByLayer('Arena')),
+      target: tilemap.getCanvasPositionFromTilePosition(tilemap.getRandomTilePositionByLayer('Arena'))
+    };
+    const configuration: EnemyConfig = new EnemyConfiguration(config.config);
+    const state: IEnemyState = new EnemyState(config.state);
+    const stats: IEnemyStats = new EnemyStats(config.stats);
+    const enemyObject: EnemyObject = {
+      config: configuration,
+      state: state,
+      stats: stats
+    };
+
+    const animationHandler = new AnimationHandler(enemyObject.config, {...randomiser.position});
+    const newEnemy = new Enemy(enemyObject, animationHandler, {...randomiser.position}, eventEmitter, projectilePool, {...randomiser.target});
     enemies.push(newEnemy);
   };
 
