@@ -8,6 +8,7 @@ export default class Projectile implements IProjectile {
   private startPosition: Coordinates;
   private state: ProjectileState;
   private targetInRange: boolean = false;
+  private graphic: HTMLImageElement = new Image();
 
   constructor(config: ProjectileConfig, position: Coordinates, entityConfig: Config) {
     const coordinate = { x: position.x, y: position.y };
@@ -17,8 +18,14 @@ export default class Projectile implements IProjectile {
       pierce: 0,
       position: coordinate
     };
-
     this.startPosition = coordinate;
+
+    this.graphic.src = `./src/assets/images/entities/misc/bullet.png`;
+
+    this.graphic.onload = () => {
+      this.config.width = this.graphic.width;
+      this.config.height = this.graphic.height;
+    };
   };
 
   /* Getters */
@@ -98,31 +105,29 @@ export default class Projectile implements IProjectile {
 
   public render(context: CanvasRenderingContext2D, offset: Coordinates = {x: 0, y: 0}): void {
     this.config.offset = offset;
-
+    const entityName = this.config.name.split('-');
     context.save();
-    if(this.config.name === 'player') context.translate(offset.x, offset.y);
+    if(entityName[0] === 'player') context.translate(offset.x, offset.y);
 
-    context.lineWidth = this.config.height / 2;
-    context.beginPath();
     context.moveTo(this.currentPositionOffset.x, this.currentPositionOffset.y);
-    context.lineTo(
-      this.currentPositionOffset.x + this.config.width * Math.cos(this.rotateAngle), 
-      this.currentPositionOffset.y + this.config.width * Math.sin(this.rotateAngle)
+    context.drawImage(
+      this.graphic,
+      this.currentPositionOffset.x,
+      this.currentPositionOffset.y,
+      this.graphic.width,
+      this.graphic.height
     );
-    if(this.config.name === 'player') {
-      context.strokeStyle = '#E1E1E1';
-    } else {
-      context.strokeStyle = '#FF0000';
-    };
-    context.stroke();
     
-    /* context.fillStyle = '#fff';
-    context.font = "12px serif";
-    context.fillText(
-      `${Math.floor(this.state.position.x)}, ${Math.floor(this.state.position.y)}`,
-      this.state.position.x + 2,
-      this.state.position.y + 10
-    ); */
+    /* 
+      context.fillStyle = '#fff';
+      context.font = "12px serif";
+      context.fillText(
+        `${Math.floor(this.state.position.x)}, ${Math.floor(this.state.position.y)}`,
+        this.state.position.x + 2,
+        this.state.position.y + 10
+      ); 
+    */
+
     context.restore();
   };
 

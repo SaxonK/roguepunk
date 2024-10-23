@@ -11,7 +11,7 @@ class PlayerConfiguration implements Config {
   constructor(config: PlayerConfig) {
     const combat = config.combat as BaseCombatType;
 
-    this.name = config.name;
+    this.name = `player-${config.name}`;
     this.combat = combat;
     this.width = config.width;
     this.height = config.height;

@@ -51,11 +51,11 @@ window.addEventListener("load", () => {
   /* Initialise Heads Up Display (HUD) layer */
   const elementLayer: ElementLayer = new ElementLayer();
   const expHealthCoupled = [
-    new StatElementExperience(eventEmitter, game.state.player.state.experience.experience, game.state.player.state.experience.experienceToNextLevel),
+    new StatElementExperience(eventEmitter, game.state.player.state.gameplay.experience.experience, game.state.player.state.gameplay.experience.experienceToNextLevel),
     new StatElementDetailed('hitpoints', game.state.player.stats.hitpoints, eventEmitter, 'Health')
   ];
   const coreStatElements = [
-    new StatElementLevel(eventEmitter, game.state.player.state.experience.level),
+    new StatElementLevel(eventEmitter, game.state.player.state.gameplay.experience.level),
     new StatElementWrapper('Group exp health', expHealthCoupled)
   ];
   const coreStatsWrapper = new StatElementWrapper('Core Stats', coreStatElements);

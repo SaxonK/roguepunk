@@ -1,22 +1,20 @@
-import { EnemyState as State, StatusEffects } from "../../utils/types/interfaces";
-import { PlayerStateObject } from "../../utils/types/types";
+import { EntityLifecycleState, EnemyGameplayState, EnemyState as State } from "../../utils/types/interfaces";
 
 class EnemyState implements State {
-  effects: StatusEffects[];
-  hitpoints: number;
-  position: { x: number; y: number; };
+  lifecycle: EntityLifecycleState;
+  gameplay: EnemyGameplayState;
 
-  constructor(state: PlayerStateObject) {
-    this.effects = [];
-    this.hitpoints = state.hitpoints;
-    this.position = state.position;
-  };
-
-  render(): void {
-
-  };
-  update(): void {
-
+  constructor(state: EnemyGameplayState) {
+    this.lifecycle = {
+      alive: true,
+      dying: false,
+      dead: false
+    };
+    this.gameplay = {
+      effects: state.effects,
+      hitpoints: state.hitpoints,
+      position: state.position
+    };
   };
 };
 

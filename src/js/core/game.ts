@@ -31,7 +31,7 @@ export default class Game implements Scope {
     };
 
     this.eventEmitter = eventEmitter;
-  }
+  };
 
   public get mouseCanvasPosition(): Coordinates {
     return {

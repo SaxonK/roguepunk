@@ -1,7 +1,41 @@
-import { Action, AllActions, ActionStates, BaseCombatType, BaseMovementType, Coordinates } from "./types";
+import { Action, AllActions, ActionStates, AnimationType, BaseCombatType, BaseMovementType, Coordinates } from "./types";
 
 export interface ActionBinding {
   [key: string]: Action;
+};
+export interface AnimationData {
+  active: boolean;
+  spritesheet: HTMLImageElement;
+  frames: Frame[];
+};
+export interface AnimationFrameDetails {
+  spritesheet: HTMLImageElement;
+  scale: 1 | -1;
+  sx: number;
+  sy: number;
+  sw: number;
+  sh: number;
+};
+export interface AnimationHandler {
+  deathAnimationComplete: boolean;
+  frame: AnimationFrameDetails;
+  update: (entityPosition: Coordinates, stats: Stats, damaged: boolean, animation: AnimationType | null, animating: boolean) => void;
+};
+export interface AnimationState {
+  current: {
+    active: boolean;
+    index: number;
+    animation: AnimationType;
+    animating: boolean;
+    position: Coordinates;
+    scale: 1 | -1;
+  };
+  previous: {
+    animation: AnimationType;
+    change: number;
+    position: Coordinates;
+    scale: 1 | -1;
+  };
 };
 export interface BoundingBox {
   min: Coordinates,
@@ -49,6 +83,7 @@ export interface Enemy extends Entity {
   hasReachTargetPosition: boolean;
   state: EnemyState;
   stats: EnemyStats;
+  setReachedTargetTime: () => void;
   update: (player: Player) => void;
   updateTargetPosition: (newTarget: Coordinates) => void;
 };
@@ -56,8 +91,11 @@ export interface EnemyConfig extends Config {
   combat: BaseCombatType;
   movement: BaseMovementType;
 };
-export interface EnemyState extends State {
+export interface EnemyGameplayState extends EntityGameplayState {
   effects: StatusEffects[];
+};
+export interface EnemyState extends State {
+  gameplay: EnemyGameplayState;
 };
 export interface EnemyStats extends Stats {
   experience: number;
@@ -72,6 +110,18 @@ export interface Entity {
   render: (context: CanvasRenderingContext2D) => void;
   takeDamage: (damage: number) => void;
 };
+export interface EntityLifecycleState {
+  alive: boolean;
+  dying: boolean;
+  dead: boolean;
+};
+export interface EntityGameplayState {
+  hitpoints: number;
+  position: {
+    x: number;
+    y: number;
+  };
+};
 export interface EventEmitter<Events extends Record<string, any>> {
   on<K extends keyof Events>(event: K, listener: (data: Events[K]) => void): void;
   off<K extends keyof Events>(event: K, listener: (data: Events[K]) => void): void;
@@ -83,6 +133,12 @@ export interface FpsManager {
   calculateFPS: (timestamp: EpochTimeStamp) => void;
   render: (context: CanvasRenderingContext2D, width: number) => void;
   toggleFramerateDisplay: () => void;
+};
+export interface Frame {
+  frame: number;
+  width: number;
+  height: number;
+  sx: number;
 };
 export interface InterfaceStates {
   [key: string]: boolean | Record<string, boolean>[];
@@ -117,11 +173,14 @@ export interface Player extends Entity {
 export interface PlayerConfig extends Config {
   combat: BaseCombatType;
 };
-export interface PlayerState extends State {
+export interface PlayerGameplayState extends EntityGameplayState {
   coins: number;
   experience: LevelSystem;
   items: Array<Item>;
   weapons: Array<Weapon>;
+};
+export interface PlayerState extends State {
+  gameplay: PlayerGameplayState;
 };
 export interface Projectile {
   boundingBox: BoundingBox;
@@ -171,11 +230,8 @@ export interface StatElementWrapper {
   element: HTMLDivElement;
 };
 export interface State {
-  hitpoints: number;
-  position: {
-    x: number;
-    y: number;
-  };
+  lifecycle: EntityLifecycleState;
+  gameplay: EntityGameplayState;
 };
 export interface States {
   camera: Camera;

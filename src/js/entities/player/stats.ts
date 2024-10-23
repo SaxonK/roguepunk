@@ -1,6 +1,6 @@
-import { Stats as StatsInterface } from "../../utils/types/interfaces";
+import { Stats as IStats } from "../../utils/types/interfaces";
 
-class Stats implements StatsInterface {
+class Stats implements IStats {
   damage: number;
   fireRate: number;
   hitpoints: number;
@@ -8,7 +8,7 @@ class Stats implements StatsInterface {
   resilience: number;
   speed: number;
   
-  constructor(stats: StatsInterface) {
+  constructor(stats: IStats) {
     this.damage = stats.damage;
     this.fireRate = stats.fireRate;
     this.hitpoints = stats.hitpoints;
