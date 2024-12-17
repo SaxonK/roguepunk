@@ -105,6 +105,9 @@ export default class MenuInterface {
       targetButton.addEventListener('click', action);
     }
   };
+  public debug(): void {
+    console.log('Debug mode toggled');
+  };
   public moveUp(): void {
     if(!this.states['menu']) return;
     const buttonStates = this.states['buttons'] as Record<string, boolean>[];

@@ -1,25 +1,53 @@
-import { Action, AllActions, ActionStates, AnimationType, BaseCombatType, BaseMovementType, Coordinates } from "./types";
+import { ActionBinding, AllActions, ActionStates, AnimationType, BaseCombatType, BaseMovementType, CharacterBoundingBoxByEntity, CollisionStates, Coordinates, EntityType, EntityTypeCharactersByEntity, EntityTypeCharacterCodes, Hotspots, SceneTypes, WorldTypes } from "./types";
 
-export interface ActionBinding {
-  [key: string]: Action;
-};
 export interface AnimationData {
   active: boolean;
+  initialised: boolean;
   spritesheet: HTMLImageElement;
   frames: Frame[];
 };
+export interface IAnimationEntityState {
+  alive: boolean;
+  animation: IEntityAnimationState;
+  attacking: boolean;
+  damaged: boolean;
+  position: Coordinates;
+};
 export interface AnimationFrameDetails {
   spritesheet: HTMLImageElement;
-  scale: 1 | -1;
   sx: number;
   sy: number;
   sw: number;
   sh: number;
 };
+export interface IEntityAnimationHandler {
+  initialised: boolean;
+  getCharactersByEntity: <Entity extends EntityType>(entity: Entity) => EntityTypeCharactersByEntity<Entity>[];
+  getCharacterBoundingBoxByEntity: <Entity extends EntityType>(entity: Entity) => Promise<CharacterBoundingBoxByEntity<Entity>>;
+  getFrame: (animation: AnimationType, entityName: EntityTypeCharacterCodes, index: number) => AnimationFrameDetails;
+  reloadLibrary: (scale: number, world: WorldTypes) => Promise<void>;
+  update: (entityName: EntityTypeCharacterCodes, state: IAnimationEntityState, stats: Stats) => IEntityAnimationState;
+};
 export interface AnimationHandler {
   deathAnimationComplete: boolean;
   frame: AnimationFrameDetails;
+  initialised: boolean;
   update: (entityPosition: Coordinates, stats: Stats, damaged: boolean, animation: AnimationType | null, animating: boolean) => void;
+};
+export interface IEntityAnimationState {
+  current: {
+    active: boolean;
+    index: number;
+    animation: AnimationType;
+    animating: boolean;
+    scale: 1 | -1;
+  };
+  previous: {
+    animation: AnimationType;
+    change: number;
+    position: Coordinates;
+    scale: 1 | -1;
+  };
 };
 export interface AnimationState {
   current: {
@@ -55,7 +83,7 @@ export interface Camera {
   resize: (width: number, height: number) => void;
 };
 export interface Config {
-  name: string;
+  name: EntityTypeCharacterCodes;
   width: number;
   height: number;
   offset: {
@@ -66,6 +94,8 @@ export interface Config {
 export interface ControlsManager {
   actionMapping: ActionBinding;
   actionState: ActionStates;
+  isRepeatableByKey: (key: string) => boolean | undefined;
+  resetActionStates: () => void;
   setActionStateTrue: (key: string) => void;
   setActionStateFalse: (key: string) => void;
   activeUserActions: AllActions[];
@@ -78,11 +108,17 @@ export interface Cycle {
 export interface Cycles {
   [key: string]: Cycle;
 };
+export interface IDimension {
+  width: number;
+  height: number;
+};
 export interface Enemy extends Entity {
+  attacking: boolean;
   config: EnemyConfig;
   hasReachTargetPosition: boolean;
   state: EnemyState;
   stats: EnemyStats;
+  reset: (config: EnemyConfig, state: EnemyState) => void;
   setReachedTargetTime: () => void;
   update: (player: Player) => void;
   updateTargetPosition: (newTarget: Coordinates) => void;
@@ -94,6 +130,10 @@ export interface EnemyConfig extends Config {
 export interface EnemyGameplayState extends EntityGameplayState {
   effects: StatusEffects[];
 };
+export interface IEnemyPool {
+  getEnemyByCharacter: (character: EntityTypeCharactersByEntity<'enemy'>, position: Coordinates, target: Coordinates) => Enemy;
+  returnEnemy: (enemy: Enemy) => void;
+};
 export interface EnemyState extends State {
   gameplay: EnemyGameplayState;
 };
@@ -103,11 +143,13 @@ export interface EnemyStats extends Stats {
 export interface Entity {
   config: Config;
   dead: boolean;
+  damaged: boolean;
   projectiles: Projectile[];
   projectilePool: ProjectilePool;
   stats: Stats;
   boundingBox: BoundingBox;
-  render: (context: CanvasRenderingContext2D) => void;
+  debug: (context: CanvasRenderingContext2D) => void;
+  render: (context: CanvasRenderingContext2D, frameDetails: AnimationFrameDetails) => void;
   takeDamage: (damage: number) => void;
 };
 export interface EntityLifecycleState {
@@ -140,6 +182,14 @@ export interface Frame {
   height: number;
   sx: number;
 };
+export interface IHotspot {
+  interaction: Layer[];
+  world: Layer[];
+};
+export interface IInteractionState {
+  active: boolean;
+  type: Hotspots | '';
+};
 export interface InterfaceStates {
   [key: string]: boolean | Record<string, boolean>[];
 };
@@ -167,8 +217,10 @@ export interface Map {
 };
 export interface Player extends Entity {
   config: PlayerConfig;
+  position: Coordinates;
   state: PlayerState;
-  update: (collisionStates: ActionStates, activeActions: AllActions[], cursorPosition: Coordinates, enemies: Enemy[]) => void;
+  resetAnimationState: () => void;
+  update: (collisionStates: CollisionStates, activeActions: AllActions[], cursorPosition: Coordinates, enemies: Enemy[], combat: boolean) => void;
 };
 export interface PlayerConfig extends Config {
   combat: BaseCombatType;
@@ -186,6 +238,7 @@ export interface Projectile {
   boundingBox: BoundingBox;
   expired: boolean;
   attack: (target: Player | Enemy) => void;
+  debug: (context: CanvasRenderingContext2D) => void;
   update: (targetPosition: Coordinates) => void;
   render: (context: CanvasRenderingContext2D, offset: Coordinates) => void;
   reset: (config: ProjectileConfig) => void;
@@ -196,6 +249,11 @@ export interface ProjectileConfig extends Config {
   range: number;
   speed: number;
 };
+export interface IScenes {
+  background: HTMLImageElement;
+  foreground: HTMLImageElement;
+  debug: HTMLImageElement;
+};
 export interface ProjectilePool {
   getProjectile: (config: ProjectileConfig, position: Coordinates, entityConfig: Config) => Projectile;
   returnProjectile: (projectile: Projectile) => void;
@@ -203,6 +261,16 @@ export interface ProjectilePool {
 export interface ProjectileState {
   pierce: number;
   position: Coordinates;
+};
+export interface Scope {
+  viewport: HTMLCanvasElement;
+  context: CanvasRenderingContext2D;
+  controlsManager: ControlsManager;
+  fps: FpsManager;
+  animationFrameId: number;
+  state: States;
+  mouseCanvasPosition: Coordinates;
+  debugToggle: () => void;
 };
 export interface StatElementDetailed {
   stat: string;
@@ -229,15 +297,20 @@ export interface StatElementWrapper {
   stat: string;
   element: HTMLDivElement;
 };
+export interface TimerElement {
+  stat: string;
+  element: HTMLDivElement;
+  update: (value: EpochTimeStamp) => void;
+};
 export interface State {
+  animation: IEntityAnimationState;
   lifecycle: EntityLifecycleState;
   gameplay: EntityGameplayState;
 };
 export interface States {
   camera: Camera;
-  enemies: Enemy[];
-  player: Player;
   mouse: Coordinates;
+  world: IWorld;
 };
 export interface Stats {
   damage: number;
@@ -253,14 +326,6 @@ export interface StatusEffects {
   name: string;
   startTime: Date;
 };
-export interface Scope {
-  viewport: HTMLCanvasElement;
-  context: CanvasRenderingContext2D;
-  fps: FpsManager;
-  animationFrameId: number;
-  state: States;
-  mouseCanvasPosition: Coordinates;
-};
 export interface Tile {
   width: number;
   height: number;
@@ -272,8 +337,15 @@ export interface Tilemap {
   tile: Tile;
   tileCount: number;
   layers: Array<Layer>;
+  tilemaps: IScenes;
+  checkHotspotInRange: (position: Coordinates, range: number) => IInteractionState;
+  getCollisionStates: (boundingBox: BoundingBox, movementSpeed: number) => CollisionStates;
   getCanvasPositionFromTilePosition: (tilePosition: Coordinates) => Coordinates;
+  getHotspotName: (position: Coordinates, range: number) => string;
+  getLayerByName: (layerName: string) => Layer | void;
+  getTilePositionFromCanvasPosition: (canvasPosition: Coordinates) => Coordinates;
   getRandomTilePositionByLayer: (layerName: string) => Coordinates;
+  render: (context: CanvasRenderingContext2D, scene: SceneTypes) => void;
 };
 export interface TilePlacement {
   id: string;
@@ -284,4 +356,36 @@ export interface Weapon {
   id: number;
   type: string;
   stats: Object;
+};
+export interface IWorld {
+  name: string;
+  time: number;
+  combat: boolean;
+  multipliers: {
+    time: number;
+    movement: number;
+    gold: number;
+    experience: number;
+    enemies: number;
+    "enemy-health": number;
+  };
+  state: IWorldStates;
+  "additional-effects": {
+    [key: string]: boolean;
+  };
+  render: (context: CanvasRenderingContext2D, cameraOffset: Coordinates, debug: boolean) => void;
+  update: (activeActions: AllActions[], cursorPosition: Coordinates) => void;
+};
+export interface IWorldState {
+  interaction: {
+    active: boolean;
+    type: Hotspots | '';
+  };
+  spawning: boolean;
+};
+export interface IWorldStates {
+  enemies: Enemy[];
+  player: Player;
+  tilemap: Tilemap;
+  world: IWorldState;
 };

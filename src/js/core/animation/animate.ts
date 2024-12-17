@@ -23,7 +23,7 @@ export default class AnimationHandler implements IAnimationHandler {
         scale: 1
       }
     };
-    this.initialiseLibrary(entity.name.split('-'), animationType, 2);
+    this.initialiseLibrary(entity.name.split('-'), animationType, 3);
   };
 
   /* Getters */
@@ -40,6 +40,9 @@ export default class AnimationHandler implements IAnimationHandler {
       sh: this.library[this.state.current.animation].frames[this.state.current.index].height
     };
   };
+  public get initialised(): boolean {
+    return Object.values(this.library).filter(animation => animation.active).every(animation => animation.initialised === true) ? true : false;
+  };
   private get movementState(): string {
     return this.state.current.position.x === this.state.previous.position.x && this.state.current.position.y === this.state.previous.position.y ? 'idle' : 'move';
   };
@@ -47,19 +50,21 @@ export default class AnimationHandler implements IAnimationHandler {
     return window.performance.now() - this.state.previous.change;
   };
 
-  /* Public Methods */
   public update(entityPosition: Coordinates, stats: Stats, damaged: boolean, animation: AnimationType | null = null, animating: boolean = false): void {
-    switch(true) {
-      case animation === 'death' && animating:
-        this.updatePlayToFinalFrameByAnimation('death', 4);
-        break;
-      case animation === 'attack' && animating:
-        this.updatePlayToFinalFrameByAnimation('attack', stats.fireRate);
-        break;
-      default:
-        this.state.current.animating = false;
-        this.updateMoving(entityPosition, stats.speed, damaged);
-        break;
+    if(!this.initialised) return;
+    if(this.initialised) {
+      switch(true) {
+        case animation === 'death' && animating:
+          this.updatePlayToFinalFrameByAnimation('death', 4);
+          break;
+        case animation === 'attack' && animating:
+          this.updatePlayToFinalFrameByAnimation('attack', stats.fireRate);
+          break;
+        default:
+          this.state.current.animating = false;
+          this.updateMoving(entityPosition, stats.speed, damaged);
+          break;
+      };
     };
   };
 
@@ -81,7 +86,7 @@ export default class AnimationHandler implements IAnimationHandler {
     };
   };
   private getFrameDelay(speed: number, constant: number = 500): number {
-    return this.state.current.animation === 'idle' ? 175 : (speed * constant) / this.library[this.state.current.animation].frames.length;
+    return this.state.current.animation === 'idle' ? 175 : (constant / speed) / this.library[this.state.current.animation].frames.length;
   };
   private getFramesByAnimation(animation: AnimationType): void {
     const spritesheetData = this.getSpritesheetDataByAnimation(0, 0, this.library[animation].spritesheet.width, 1, 'srgb' , animation);
@@ -160,6 +165,7 @@ export default class AnimationHandler implements IAnimationHandler {
     animations.forEach(animation => {
       this.library[animation] = {
         active: false,
+        initialised: false,
         spritesheet: new Image(),
         frames: []
       };
@@ -169,6 +175,7 @@ export default class AnimationHandler implements IAnimationHandler {
         this.getFramesByAnimation(animation);
         this.upscaleSpritesheetByAnimation(animation, scale);
         this.recalculateFrameDetailsByAnimation(animation, scale);
+        this.library[animation].initialised = true;
       };
     });
   };
@@ -261,6 +268,8 @@ export default class AnimationHandler implements IAnimationHandler {
     };
   };
   private updateMoving(entityPosition: Coordinates, speed: number, damaged: boolean): void {
+    if(!this.initialised) return;
+    
     /* Save previous state values */
     this.state.previous.animation = this.state.current.animation;
     this.state.previous.scale = this.state.current.scale;
@@ -273,7 +282,7 @@ export default class AnimationHandler implements IAnimationHandler {
     this.state.current.scale = this.getAnimationDirectionX(this.state.current.position);
     
     if (this.state.current.animation.split('-')[0] === this.state.previous.animation.split('-')[0]) {
-      if (this.timeSinceLastFrameChange >= this.getFrameDelay(speed) && this.state.previous.change !== 0) {
+      if (this.timeSinceLastFrameChange >= this.getFrameDelay(speed, 3000) && this.state.previous.change !== 0) {
         if (this.state.current.index === this.getTotalFramesByAnimation(this.state.current.animation)) {
           this.state.current.index = 0;
         } else {

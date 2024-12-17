@@ -13,17 +13,10 @@
   "stats": {
     "experience": 60,
     "damage": 1,
-    "fireRate": 4,
+    "fireRate": 1,
     "hitpoints": 3,
     "range": 4,
     "resilience": 0.75,
     "speed": 2
-  },
-  "state": {
-    "hitpoints": 10,
-    "position": { 
-      "x": 0, 
-      "y": 0
-    }
   }
 }

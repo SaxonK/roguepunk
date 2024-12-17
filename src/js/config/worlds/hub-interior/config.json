@@ -1,0 +1,14 @@
+{
+  "name": "hub-interior",
+  "time": 0,
+  "combat": false,
+  "multipliers": {
+    "time": 1,
+    "movement": 1,
+    "gold": 1,
+    "experience": 1,
+    "enemies": 1,
+    "enemy-health": 1
+  },
+  "additional-effects": {}
+}
