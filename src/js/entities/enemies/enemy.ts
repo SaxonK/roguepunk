@@ -1,15 +1,14 @@
-import { AnimationFrameDetails, AnimationHandler, BoundingBox, Enemy as EnemyInterface, EnemyConfig, EnemyState, Player, EnemyStats, EventEmitter, ProjectilePool } from "../../utils/types/interfaces";
-import { AnimationType, BaseMovementType, Coordinates, EnemyObject, Events } from "../../utils/types/types";
+import { AnimationFrameDetails, BoundingBox, Enemy as EnemyInterface, EnemyConfig, EnemyState, Player, EnemyStats, EventEmitter, ProjectilePool } from "../../utils/types/interfaces";
+import { BaseMovementType, Coordinates, EnemyObject, Events } from "../../utils/types/types";
 import Projectile from "../projectiles/projectile";
 export default class Enemy implements EnemyInterface {
   config: EnemyConfig;
+  damaged: boolean = false;
   projectiles: Projectile[] = [];
   projectilePool: ProjectilePool;
   stats: EnemyStats;
   state: EnemyState;
-
-  private animationHandler: AnimationHandler;
-  private damaged: boolean = false;
+  
   private eventEmitter: EventEmitter<Events>;
   private targetPosition: Coordinates;
   private lastAttack: number = 0;
@@ -19,27 +18,30 @@ export default class Enemy implements EnemyInterface {
   private reachedTargetTime: number = 0;
 
   constructor(
-    enemy: EnemyObject, 
-    animationHandler: AnimationHandler,
-    position: Coordinates, 
+    enemy: EnemyObject,
+    position: Coordinates,
     eventEmitter: EventEmitter<Events>,
     projectilePool: ProjectilePool,
+    state: EnemyState,
     target: Coordinates = {x: 0, y: 0}
   ) {
     this.config = enemy.config;
     this.eventEmitter = eventEmitter;
     this.stats = enemy.stats;
-    this.state = enemy.state;
+    this.state = state;
+    this.state.animation.previous.position = position;
     this.state.gameplay.position = position;
     this.config.combat = enemy.config.combat;
     this.config.movement = enemy.config.movement;
     this.targetPosition = target;
     
-    this.animationHandler = animationHandler;
     this.projectilePool = projectilePool;
   };
 
   /* Getters */
+  public get attacking(): boolean {
+    return this.attackAnimation;
+  };
   public get boundingBox(): BoundingBox {
     return {
       min: {
@@ -55,6 +57,7 @@ export default class Enemy implements EnemyInterface {
   public get dead(): boolean {
     return this.state.gameplay.hitpoints <= 0 ? true : false;
   };
+
   private get attackIntervalInMilliseconds(): number {
     return 1000 / this.stats.fireRate;
   };
@@ -78,6 +81,9 @@ export default class Enemy implements EnemyInterface {
   };
 
   /* Setters */
+  public set configuration(configuration: EnemyConfig) {
+    this.configuration = configuration;
+  };
   private set isPlayerInRange(player: Player) {
     const inRange = this.aabbIntersect(player.boundingBox, this.stats.range) ? true : false;
     this.playerInRange = inRange;
@@ -87,6 +93,30 @@ export default class Enemy implements EnemyInterface {
   };
 
   /* Public Methods */
+  public debug(context: CanvasRenderingContext2D): void {
+    /* Center Point */
+    context.strokeStyle = '#FFFFFF';
+    context.fillStyle = '#FFFFFF';
+    context.font = "8px serif";
+    context.strokeRect(this.state.gameplay.position.x, this.state.gameplay.position.y, this.config.width, this.config.height);
+    context.fillRect(
+      this.state.gameplay.position.x - 2.5,
+      this.state.gameplay.position.y - 2.5,
+      5,
+      5
+    );
+    context.fillText(
+      `${Math.floor(this.state.gameplay.position.x)}, ${Math.floor(this.state.gameplay.position.y)}`,
+      this.state.gameplay.position.x - (this.horizontalOffset / 2),
+      this.state.gameplay.position.y - 10
+    );
+
+    /* Bounding Box Points */
+    this.renderPositionPoints(context, { x: this.boundingBox.min.x, y: this.boundingBox.min.y }, 'top', '#FFFFFF');
+    this.renderPositionPoints(context, { x: this.boundingBox.max.x, y: this.boundingBox.min.y }, 'top', '#FFFFFF');
+    this.renderPositionPoints(context, { x: this.boundingBox.min.x, y: this.boundingBox.max.y }, 'bottom', '#FFFFFF');
+    this.renderPositionPoints(context, { x: this.boundingBox.max.x, y: this.boundingBox.max.y }, 'bottom', '#FFFFFF');
+  };
   public takeDamage(damage: number): void {
     this.state.gameplay.hitpoints -= damage;
     this.damaged = true;
@@ -98,17 +128,15 @@ export default class Enemy implements EnemyInterface {
   public setReachedTargetTime(): void {
     this.reachedTargetTime = window.performance.now();
   };
-  public render(context: CanvasRenderingContext2D): void {
+  public render(context: CanvasRenderingContext2D, frameDetails: AnimationFrameDetails): void {
     this.config.offset.x = this.state.gameplay.position.x - this.horizontalOffset;
     this.config.offset.y = this.state.gameplay.position.y - this.verticalOffset;
 
-    let frameDetails: AnimationFrameDetails = this.animationHandler.frame;
-
     /* Flip image if moving left */
-    if (frameDetails.scale === -1) {
+    if(this.state.animation.current.scale === -1) {
       context.save();
       context.translate(this.state.gameplay.position.x + frameDetails.sw / 2, this.state.gameplay.position.y + frameDetails.sh / 2); 
-      context.scale(frameDetails.scale, 1);
+      context.scale(this.state.animation.current.scale, 1);
       context.drawImage(
         frameDetails.spritesheet,
         frameDetails.sx,
@@ -134,26 +162,20 @@ export default class Enemy implements EnemyInterface {
         frameDetails.sh
       );
     };
+  };
+  public reset(config: EnemyConfig, state: EnemyState): void {
+    const coordinate = { x: 0, y: 0 };
 
-    context.strokeStyle = '#FFFFFF';
-    context.fillStyle = '#FFFFFF';
-    // context.strokeRect(this.state.position.x, this.state.position.y, this.config.width, this.config.height);
+    this.damaged = false;
+    this.config = config;
+    this.state = state;
 
-    /* Canvas Co-ordinates */
-    context.font = "8px serif";
-    context.fillText(
-      `${Math.floor(this.state.gameplay.position.x)}, ${Math.floor(this.state.gameplay.position.y)}`,
-      this.state.gameplay.position.x + 2,
-      this.state.gameplay.position.y + 10
-    );
-
-    /* Entity Centre */
-    context.fillRect(
-      this.state.gameplay.position.x + this.horizontalOffset - 2.5,
-      this.state.gameplay.position.y + this.verticalOffset - 2.5,
-      5,
-      5
-    );
+    this.targetPosition = coordinate;
+    this.lastAttack = 0;
+    this.lastDamage = 0;
+    this.playerInRange = false;
+    this.attackAnimation = false;
+    this.reachedTargetTime = 0;
   };
   public update(player: Player): void {
     if(this.state.lifecycle.alive) {
@@ -161,17 +183,9 @@ export default class Enemy implements EnemyInterface {
       this.attack(player);
       this.movement(this.config.movement, player.state.gameplay.position);
       this.resetDamageState();
-    }
+    };
     if(!this.state.lifecycle.dead) {
-      let animation: AnimationType | null = null;
-      let animating: boolean = false;
-
-      if(this.state.lifecycle.alive && this.playerInRange) { animation = 'attack'; animating = true; };
-      if(this.state.lifecycle.dying) { animation = 'death'; animating = true; };
-
-      this.animationHandler.update(this.state.gameplay.position, this.stats, this.damaged, animation, animating);
-      this.config.width = this.animationHandler.frame.sw;
-      this.config.height = this.animationHandler.frame.sh;
+      if(this.state.lifecycle.alive && this.playerInRange) { this.state.animation.current.animation = 'attack'; this.state.animation.current.animating = true; };
     };
     this.updateProjectiles(player.state.gameplay.position, player);
     this.lifecycleTransition();
@@ -207,7 +221,7 @@ export default class Enemy implements EnemyInterface {
         this.state.lifecycle.alive = false;
         this.state.lifecycle.dying = true;
         break;
-      case this.state.lifecycle.dying && this.animationHandler.deathAnimationComplete:
+      case this.state.lifecycle.dying && !this.state.animation.current.active && !this.state.animation.current.animating:
         this.state.lifecycle.dying = false;
         this.state.lifecycle.dead = true;
         break;
@@ -240,6 +254,22 @@ export default class Enemy implements EnemyInterface {
       speed: this.stats.speed
     }, position, this.config)) as Projectile;
     this.projectiles.push(projectile);
+  };
+  private renderPositionPoints(context: CanvasRenderingContext2D, position: Coordinates, textPosition: 'top' | 'bottom', color: string): void {
+    const verticalAlign = textPosition === 'top' ? -8: 11;
+    context.fillStyle = color;
+    context.font = "8px serif";
+    context.fillRect(
+      position.x - 2.5,
+      position.y - 2.5,
+      5,
+      5
+    );
+    context.fillText(
+      `${Math.floor(position.x)}, ${Math.floor(position.y)}`,
+      position.x - 2.5,
+      position.y + verticalAlign
+    );
   };
   private updatePosition(current: number, target: number, speed: number): number {
     if (current < target) {

@@ -1,9 +1,9 @@
-import { StatElementDetailed, StatElementExperience, StatElementLevel, StatElementWrapper } from "../types/interfaces";
+import { StatElementDetailed, StatElementExperience, StatElementLevel, StatElementWrapper, TimerElement } from "../types/interfaces";
 import { anchorPoints, AnchorPoints } from "../types/types";
 
 export default class ElementLayer {
   element: HTMLDivElement = document.createElement('div');
-  anchorPointOrder: Record<AnchorPoints, (StatElementDetailed | StatElementExperience | StatElementLevel | StatElementWrapper)[]> = {} as Record<AnchorPoints, (StatElementDetailed | StatElementExperience | StatElementLevel | StatElementWrapper)[]>;
+  anchorPointOrder: Record<AnchorPoints, (StatElementDetailed | StatElementExperience | StatElementLevel | StatElementWrapper | TimerElement)[]> = {} as Record<AnchorPoints, (StatElementDetailed | StatElementExperience | StatElementLevel | StatElementWrapper)[]>;
 
   constructor() {
     this.element.id = 'element-layer';

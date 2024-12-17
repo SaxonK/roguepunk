@@ -96,6 +96,15 @@ export default class Projectile implements IProjectile {
       this.state.pierce += 1;
     }
   };
+  public debug(context: CanvasRenderingContext2D): void {
+    context.fillStyle = '#fff';
+    context.font = "12px serif";
+    context.fillText(
+      `${Math.floor(this.state.position.x)}, ${Math.floor(this.state.position.y)}`,
+      this.state.position.x + 2,
+      this.state.position.y + 10
+    ); 
+  };
   public update(targetPosition: Coordinates): void {
     if(this.angle === undefined) this.angle = this.calculateAngle(targetPosition);
     
@@ -105,29 +114,14 @@ export default class Projectile implements IProjectile {
 
   public render(context: CanvasRenderingContext2D, offset: Coordinates = {x: 0, y: 0}): void {
     this.config.offset = offset;
-    const entityName = this.config.name.split('-');
     context.save();
-    if(entityName[0] === 'player') context.translate(offset.x, offset.y);
-
-    context.moveTo(this.currentPositionOffset.x, this.currentPositionOffset.y);
-    context.drawImage(
-      this.graphic,
-      this.currentPositionOffset.x,
-      this.currentPositionOffset.y,
-      this.graphic.width,
-      this.graphic.height
-    );
-    
-    /* 
-      context.fillStyle = '#fff';
-      context.font = "12px serif";
-      context.fillText(
-        `${Math.floor(this.state.position.x)}, ${Math.floor(this.state.position.y)}`,
-        this.state.position.x + 2,
-        this.state.position.y + 10
-      ); 
-    */
-
+      context.drawImage(
+        this.graphic,
+        this.state.position.x,
+        this.state.position.y,
+        this.graphic.width,
+        this.graphic.height
+      );
     context.restore();
   };
 

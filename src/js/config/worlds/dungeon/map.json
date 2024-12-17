@@ -1,5 +1,5 @@
 {
-  "name": "Level 0",
+  "name": "dungeon",
   "tile": {
     "width": 16,
     "height": 16
@@ -20513,6 +20513,17 @@
           "id": "49",
           "x": 31,
           "y": 32
+        }
+      ],
+      "collider": false
+    },
+    {
+      "name": "spawn",
+      "tiles": [
+        {
+          "id": "0",
+          "x": 31,
+          "y": 31
         }
       ],
       "collider": false

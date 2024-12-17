@@ -1,9 +1,10 @@
 {
-  "w": "moveUp",
-  "a": "moveLeft",
-  "s": "moveDown",
-  "d": "moveRight",
-  "Enter": "select",
-  "Escape": "pause",
-  "Alt": "unlockHud"
+  "moveUp": "w",
+  "moveLeft": "a",
+  "moveDown": "s",
+  "moveRight": "d",
+  "select": "e",
+  "pause": "Escape",
+  "unlockHud": "Alt",
+  "debug": "F1"
 }

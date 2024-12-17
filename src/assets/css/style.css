@@ -35,6 +35,7 @@ body {
 }
 #game-container {
   border: none;
+  background-color: #000;
   cursor: url(../images/crosshair.png) 16 16, default;
   z-index: 1;
 }
@@ -265,6 +266,15 @@ body {
   flex-direction: column;
   width: fit-content;
   gap: 4px;
+}
+
+/* Timer Element */
+#timer .value {
+  font-size: 38px;
+  background-image: linear-gradient(#ff9190, #fdc094);
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
 }
 
 /* Main menu */

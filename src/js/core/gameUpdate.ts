@@ -50,6 +50,9 @@ const update = (gameState: States, activeActions: AllActions[], mouseCanvasPosit
     }
   });
 
+  console.log(playerTilemapPosition.x, playerTilemapPosition.y);
+  console.log(playerBoundaryCollisions);
+
   player.update(playerBoundaryCollisions, activeActions, mouseCanvasPosition, enemies);
   camera.update(player.state.gameplay.position.x, player.state.gameplay.position.y);
 
