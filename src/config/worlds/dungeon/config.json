@@ -1,0 +1,15 @@
+{
+  "name": "dungeon",
+  "time": 20,
+  "combat": true,
+  "hud": true,
+  "multipliers": {
+    "time": 1,
+    "movement": 2,
+    "gold": 1,
+    "experience": 2,
+    "enemies": 1,
+    "enemy-health": 1
+  },
+  "additional-effects": {}
+}
