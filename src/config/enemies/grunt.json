@@ -1,0 +1,22 @@
+{
+  "config": {
+    "name": "grunt",
+    "combat": "melee",
+    "movement": "wander",
+    "width": 32,
+    "height": 32,
+    "offset": {
+      "x": 0,
+      "y": 0 
+    }
+  },
+  "stats": {
+    "experience": 15,
+    "damage": 5,
+    "fireRate": 0.1,
+    "hitpoints": 10,
+    "range": 20,
+    "resilience": 1,
+    "speed": 1
+  }
+}

@@ -24,15 +24,6 @@
 body {
   margin: 0;
 }
-#shootey-wavey {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-  flex-direction: column;
-  align-items: center;
-  box-sizing: border-box;
-  z-index: 0;
-}
 #game-container {
   border: none;
   background-color: #000;
@@ -181,7 +172,7 @@ body {
 }
 
 /* Stat Element - Level */
-#level.stat-element {
+#level.element {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -191,7 +182,7 @@ body {
   border-radius: 0 0 0 16px;
   font-size: 16px;
 }
-#level.stat-element .element-wrapper {
+#level.element .element-wrapper {
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -200,7 +191,7 @@ body {
   border-radius: 0 0 0 10px;
   background: rgb(94, 114, 235);
 }
-#level.stat-element .level-value {
+#level.element .value {
   background-image: linear-gradient(#ff9190, #fdc094);
   color: transparent;
   background-clip: text;
@@ -208,10 +199,10 @@ body {
 }
 
 /* Stat Element - Health */
-#hitpoints.stat-element {
+#hitpoints.element {
   color: rgba(78, 57, 196, 1);
 }
-#hitpoints.stat-element::after {
+#hitpoints.element::after {
   content: "";
   position: absolute;
   width: 100%;
@@ -222,53 +213,44 @@ body {
   background: linear-gradient(#120c6e, #5e72eb);
   z-index: -1;
 }
-#hitpoints.stat-element .element-wrapper {
+#hitpoints.element .element-wrapper {
   padding: 0.525rem 1rem;
   background: rgba(255, 227, 216, 0.75);
   border-radius: 0 0 16px 0;
   gap: 1rem;
 }
-#hitpoints.stat-element .element-wrapper .stat-label {
+#hitpoints.element .element-wrapper .stat-label {
   margin-right: auto;
 }
-#hitpoints.stat-element .background-progress {
+#hitpoints.element .background-progress {
   border-radius: 0 0 16px 0;
   background: linear-gradient(var(--base-health-color-3), var(--base-health-color-1));
   transition: all 600ms ease-out, --base-health-color-1 600ms ease-out, --base-health-color-3 600ms ease-out;
+  z-index: 0;
 }
-#hitpoints.stat-element.damage .background-progress {
+#hitpoints.element.damage .background-progress {
   background: linear-gradient(var(--base-health-color-4), var(--base-health-color-2));
   transition: all 600ms ease-out, --base-health-color-2 600ms ease-out, --base-health-color-4 600ms ease-out;
 }
 
 /* Stat Element - Experience */
-#experience.stat-element {
+#experience.element {
   border-radius: 0 16px 0 0;
 }
-#experience.stat-element .element-wrapper {
+#experience.element .element-wrapper {
   padding: 4px 0;
   background: rgba(201, 206, 248, 0.5);
   border-radius: 0 16px 0 0;
 }
-#experience.stat-element .background-progress {
+#experience.element .background-progress {
   background-color: rgb(0, 255, 255);
   border-radius: 0 16px 0 0;
 }
 
-/* Stat Element - Wrappers */
-#core-stats {
-  display: flex;
-  width: fit-content;
-  gap: 4px;
-}
-#group-exp-health {
-  display: flex;
-  flex-direction: column;
-  width: fit-content;
-  gap: 4px;
-}
-
 /* Timer Element */
+#timer {
+  width: fit-content;
+}
 #timer .value {
   font-size: 38px;
   background-image: linear-gradient(#ff9190, #fdc094);

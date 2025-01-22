@@ -1,0 +1,86 @@
+{
+  "top-left": [
+    {
+      "name": "core-stats",
+      "type": "Container",
+      "value": [
+        {
+          "name": "core-stats-column-1",
+          "type": "Container",
+          "value": [
+            {
+              "name": "level",
+              "type": "Basic",
+              "value": 1,
+              "maxValue": null,
+              "direction": null,
+              "displayOrder": 1,
+              "draggable": false,
+              "visible": true
+            }
+          ],
+          "maxValue": null,
+          "direction": "column",
+          "displayOrder": 1,
+          "draggable": false,
+          "visible": true
+        },
+        {
+          "name": "core-stats-column-2",
+          "type": "Container",
+          "value": [
+            {
+              "name": "experience",
+              "type": "Progressbar",
+              "value": 0,
+              "maxValue": 10,
+              "direction": null,
+              "displayOrder": 1,
+              "draggable": false,
+              "visible": true
+            },
+            {
+              "name": "hitpoints",
+              "type": "Detailed",
+              "value": 10,
+              "maxValue": 10,
+              "direction": null,
+              "displayOrder": 2,
+              "draggable": false,
+              "visible": true
+            }
+          ],
+          "maxValue": null,
+          "direction": "column",
+          "displayOrder": 2,
+          "draggable": false,
+          "visible": true
+        }
+      ],
+      "maxValue": null,
+      "direction": "row",
+      "displayOrder": 1,
+      "draggable": true,
+      "visible": true
+    }
+  ],
+  "top-center": [
+    {
+      "name": "timer",
+      "type": "Basic",
+      "value": "00:00",
+      "maxValue": null,
+      "direction": null,
+      "displayOrder": 1,
+      "draggable": true,
+      "visible": true
+    }
+  ],
+  "top-right": [],
+  "middle-left": [],
+  "middle-center": [],
+  "middle-right": [],
+  "bottom-left": [],
+  "bottom-center": [],
+  "bottom-right": []
+}
