@@ -36,6 +36,7 @@ export default class Game implements Scope {
     this.debug = false;
     this.eventEmitter.on("gamePause", () => this.pause());
     this.eventEmitter.on("gameStart", () => this.start());
+    this.eventEmitter.on("levelChanged", () => this.pause());
     this.eventEmitter.on("worldEnd", () => this.pause());
     this.eventEmitter.on("worldLoadStart", () => this.pause());
     this.eventEmitter.on("worldLoadComplete", () => this.start());

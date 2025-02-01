@@ -1,0 +1,22 @@
+{
+  "id": "katana",
+  "name": "Katana",
+  "desciption": "A generic Katana.",
+  "stats": {
+    "amount": 1,
+    "cooldown": 1,
+    "critChance": 50,
+    "critMultiplier": 1.5,
+    "damage": 8,
+    "effectChance": 0,
+    "effectDuration": 0,
+    "maxLevel": 10,
+    "piercing": 0,
+    "rarity": 1,
+    "size": 1,
+    "speed": 12
+  },
+  "type": "melee",
+  "effects": [],
+  "weight": 5
+}

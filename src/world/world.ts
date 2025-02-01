@@ -1,4 +1,4 @@
-import { IEnemyPool, EventEmitter, IEntityAnimationHandler, IInteractionState, IWorld, IWorldStates, Layer, Player, Tilemap, Enemy } from "../utils/types/interfaces";
+import { IEnemyPool, EventEmitter, IEntityAnimationHandler, IInteractionState, IItemsManager, IWorld, IWorldStates, Layer, Player, Tilemap, Enemy } from "../utils/types/interfaces";
 import { actions, ActionFunctions, AllActions, Coordinates, EntityTypeCharactersByEntity, Events, OWorld, WorldTypes } from "../utils/types/types";
 
 export default class World implements IWorld {
@@ -16,6 +16,7 @@ export default class World implements IWorld {
   private enemyPool: IEnemyPool;
   private eventEmitter: EventEmitter<Events>;
   private elapsedTime: EpochTimeStamp;
+  private itemsManager: IItemsManager;
   private loading: boolean;
   private nextEnemyWave: EpochTimeStamp = window.performance.now() + 30000;
   private startTime: EpochTimeStamp;
@@ -24,7 +25,8 @@ export default class World implements IWorld {
     entityAnimationHandler: IEntityAnimationHandler,
     config: OWorld,
     enemyPool: IEnemyPool,
-    eventEmitter: EventEmitter<Events>, 
+    eventEmitter: EventEmitter<Events>,
+    itemsManager: IItemsManager,
     player: Player, 
     tilemap: Tilemap,
     tilemapFactoryFunction: (name: string) => Promise<Tilemap>
@@ -35,6 +37,7 @@ export default class World implements IWorld {
     this.combat = config.combat;
     this.enemyPool = enemyPool;
     this.hud = config.hud;
+    this.itemsManager = itemsManager;
     this.multipliers = config.multipliers;
     this["additional-effects"] = config["additional-effects"];
 
@@ -332,13 +335,14 @@ export default class World implements IWorld {
     const elapsedTimeInSeconds = Math.floor(this.elapsedTime / 1000);
     const timeLimitInSeconds = this.time * 60;
     if(elapsedTimeInSeconds <= timeLimitInSeconds) {
-      this.eventEmitter.emit('hudUpdateValue', { name: 'timer', numValue: 0, maxValue: 0, stringValue: this.displayTime, booleanValue: false, updateType: 'replace' });
+      this.eventEmitter.emit('hudUpdateValue', { name: 'timer', arrayValue: [], numValue: 0, maxValue: 0, stringValue: this.displayTime, booleanValue: false, updateType: 'replace' });
     } else {
       this.eventEmitter.emit("worldEnd", true);
     };
   };
   private toggleHudElementVisibility(): void {
-    this.eventEmitter.emit("hudElementVisibility", { name: "core-stats", numValue: 0, maxValue: 0, stringValue: '', booleanValue: this.hud, updateType: 'replace' });
-    this.eventEmitter.emit("hudElementVisibility", { name: "timer", numValue: 0, maxValue: 0, stringValue: '', booleanValue: this.hud, updateType: 'replace' });
+    this.eventEmitter.emit("hudElementVisibility", { name: "core-stats", arrayValue: [], numValue: 0, maxValue: 0, stringValue: '', booleanValue: this.hud, updateType: 'replace' });
+    this.eventEmitter.emit("hudElementVisibility", { name: "timer", arrayValue: [], numValue: 0, maxValue: 0, stringValue: '', booleanValue: this.hud, updateType: 'replace' });
+    this.eventEmitter.emit("hudElementVisibility", { name: "weapons", arrayValue: [], numValue: 0, maxValue: 0, stringValue: '', booleanValue: this.hud, updateType: 'replace' });
   };
 };

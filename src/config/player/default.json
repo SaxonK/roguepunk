@@ -10,10 +10,10 @@
     }
   },
   "stats": {
-    "damage": 10,
-    "fireRate": 10,
+    "damage": 20,
+    "fireRate": 20,
     "hitpoints": 10,
-    "range": 200,
+    "range": 600,
     "resilience": 1,
     "speed": 5
   },

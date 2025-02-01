@@ -1,0 +1,22 @@
+{
+  "id": "claymore",
+  "name": "Claymroe",
+  "desciption": "Enter a description here.",
+  "stats": {
+    "amount": 1,
+    "cooldown": 1,
+    "critChance": 25,
+    "critMultiplier": 2,
+    "damage": 10,
+    "effectChance": 0,
+    "effectDuration": 0,
+    "maxLevel": 10,
+    "piercing": 0,
+    "rarity": 1,
+    "size": 1,
+    "speed": 10
+  },
+  "type": "aoe",
+  "effects": [],
+  "weight": 10
+}

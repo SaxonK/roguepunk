@@ -1,3 +1,25 @@
+import type { IProjectile } from "@/utils/types/interfaces";
+import type { Coordinates } from "@/utils/types/types";
+
+export default class Projectile implements IProjectile {
+  angle: number;
+  creation: EpochTimeStamp;
+  duration: number;
+  expired: boolean;
+  pierce: number;
+  position: Coordinates;
+
+  constructor(angle: number, position: Coordinates, creationTime: EpochTimeStamp) {
+    this.angle = angle;
+    this.creation = creationTime;
+    this.duration = 0;
+    this.expired = false;
+    this.pierce = 0;
+    this.position = { ...position };
+  };
+};
+
+/* 
 import { BoundingBox, Config, Enemy, Projectile as IProjectile, Player, ProjectileConfig, ProjectileState } from "../../utils/types/interfaces";
 import { Coordinates } from "../../utils/types/types";
 
@@ -28,7 +50,7 @@ export default class Projectile implements IProjectile {
     };
   };
 
-  /* Getters */
+  /* Getters
   public get boundingBox(): BoundingBox {
     return {
       min: {
@@ -43,12 +65,6 @@ export default class Projectile implements IProjectile {
   };
   private get maxTravelDistance(): number {
     return (16 * 3) * this.config.range;
-  };
-  private get currentPositionOffset(): Coordinates {
-    return {
-      x: this.state.position.x + (this.entityConfig.width / 2),
-      y: this.state.position.y + (this.entityConfig.height / 2),
-    };
   };
   private get rotateAngle(): number {
     return this.angle !== undefined ? this.angle : 0;
@@ -72,7 +88,7 @@ export default class Projectile implements IProjectile {
     return isExpired;
   };
 
-  /* Setters */
+  /* Setters
   public set configure(config: ProjectileConfig) {
     this.config = config;
   };
@@ -88,7 +104,7 @@ export default class Projectile implements IProjectile {
     this.state.position = { x: position.x, y: position.y };
   };
 
-  /* Public Methods */
+  /* Public Methods
   public attack(target: Player | Enemy): void {
     this.isTargetInRange = target;
     if(this.targetInRange){
@@ -139,7 +155,7 @@ export default class Projectile implements IProjectile {
     this.targetInRange = false;
   };
 
-  /* Private Methods */
+  /* Private Methods
   private aabbIntersect(targetBoundingBox: BoundingBox, range: number = 0): boolean {
     for (const [key] of Object.entries(this.state.position)) {
       if(this.boundingBox.min[key as keyof Coordinates] - range > targetBoundingBox.max[key as keyof Coordinates]) return false;
@@ -156,4 +172,8 @@ export default class Projectile implements IProjectile {
 
     return theta;
   };
-};
+  private move(): void {
+    this.state.position.x += this.config.speed * Math.cos(this.rotateAngle);
+    this.state.position.y += this.config.speed * Math.sin(this.rotateAngle);
+  };
+}; */

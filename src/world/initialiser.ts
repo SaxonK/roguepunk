@@ -6,6 +6,7 @@ import eventEmitter from '../utils/events/initialiser';
 import hubConfig from '../config/worlds/hub-exterior/config.json';
 import hubMap from '../config/worlds/hub-exterior/map.json';
 import hubSpritesheet from '../config/worlds/hub-exterior/spritesheet.png';
+import itemsManager from '@/entities/weapons/initialiser';
 import player from '../entities/player/initialiser';
 import projectilePool from '../entities/projectiles/initialiser';
 import Tilemap from "./tilemap";
@@ -21,6 +22,6 @@ const entityAnimationHandler = new EntityAnimationHandler(
   3
 );
 const tilemap = new Tilemap(hubMap, hubSpritesheet);
-const world = new World(entityAnimationHandler, hubConfig, enemyPool, eventEmitter, player, tilemap, tilemapFactoryFunction);
+const world = new World(entityAnimationHandler, hubConfig, enemyPool, eventEmitter, itemsManager, player, tilemap, tilemapFactoryFunction);
 
 export default world;

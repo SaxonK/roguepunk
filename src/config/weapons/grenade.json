@@ -1,0 +1,22 @@
+{
+  "id": "grenade",
+  "name": "Grenade",
+  "desciption": "A generic grenade that cause area of effect (AOE) damage.",
+  "stats": {
+    "amount": 1,
+    "cooldown": 10,
+    "critChance": 50,
+    "critMultiplier": 2,
+    "damage": 15,
+    "effectChance": 0,
+    "effectDuration": 0,
+    "maxLevel": 5,
+    "piercing": 0,
+    "rarity": 10,
+    "size": 1,
+    "speed": 5
+  },
+  "type": "aoe",
+  "effects": [],
+  "weight": 1
+}

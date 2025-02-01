@@ -93,14 +93,12 @@
 
   const resume = (): void => {
     emit('resume');
-    eventEmitter.emit('gameStart', true);
   };
   const settings = (): void => {
     emit('settings');
   };
   const quit = (): void => {
     emit('quit');
-    eventEmitter.emit('gameExit', true);
   };
 
   const methods = { resume, settings, quit };

@@ -85,7 +85,7 @@ export default class Player implements PlayerInterface {
   public takeDamage(damage: number): void {
     this.state.gameplay.hitpoints -= damage;
     this.eventEmitter.emit('hitpointsChanged', this.state.gameplay.hitpoints);
-    this.eventEmitter.emit('hudUpdateValue', { name: 'hitpoints', numValue: this.state.gameplay.hitpoints, maxValue: this.stats.hitpoints, stringValue: '', booleanValue: false, updateType: 'replace' });
+    this.eventEmitter.emit('hudUpdateValue', { name: 'hitpoints', arrayValue: [], numValue: this.state.gameplay.hitpoints, maxValue: this.stats.hitpoints, stringValue: '', booleanValue: false, updateType: 'replace' });
     this.damaged = true;
     this.lastDamage = window.performance.now();
   };

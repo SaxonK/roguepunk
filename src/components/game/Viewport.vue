@@ -64,7 +64,7 @@
     });
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        game.pause();
+        eventEmitter.emit("gamePause", false);
       }
     });
     document.addEventListener('mousemove',(event: MouseEvent) => game.setMousePosition(event));
