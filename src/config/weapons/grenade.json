@@ -10,8 +10,10 @@
     "damage": 15,
     "effectChance": 0,
     "effectDuration": 0,
+    "maxAmount": 1,
     "maxLevel": 5,
     "piercing": 0,
+    "range": 150,
     "rarity": 10,
     "size": 1,
     "speed": 5

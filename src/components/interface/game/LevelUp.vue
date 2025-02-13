@@ -2,7 +2,7 @@
   import type { InterfaceTypes } from '@/utils/types/types';
   import OverlayMenu from '../generic/OverlayMenu.vue';
   import Option from './Option.vue';
-  import itemsManager from '@/entities/weapons/initialiser';
+  import weaponsManager from '@/entities/weapons/initialiser';
   import eventEmitter from '@/utils/events/initialiser';
 
   const { visibility } = defineProps({
@@ -19,19 +19,19 @@
   };
   const setChosenOption = (name: string, active: boolean): void => {
     if(!active) {
-      itemsManager.activateWeapon(name);
+      weaponsManager.activateWeapon(name);
     } else {
-      itemsManager.levelUpWeapon(name);
+      weaponsManager.levelUpWeapon(name);
     };
     hide('levelUp');
-    gameEmitter.emit('hudUpdateValue', { name: 'weapons', arrayValue: itemsManager.activeWeaponList, numValue: 0, maxValue: 0, stringValue: '', booleanValue: false, updateType: 'replace' });
+    gameEmitter.emit('hudUpdateValue', { name: 'weapons', arrayValue: weaponsManager.activeWeaponList, numValue: 0, maxValue: 0, stringValue: '', booleanValue: false, updateType: 'replace' });
   };
 </script>
 
 <template>
   <OverlayMenu title="Level Up!" :visibility="visibility">
     <div class="options">
-      <Option v-for="option in itemsManager.getWeaponsByRandomAmount()" :index="option.name"
+      <Option v-for="option in weaponsManager.getWeaponsByRandomAmount()" :index="option.name"
         :active="option.active"
         :name="option.name"
         :description="option.desciption"

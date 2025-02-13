@@ -144,8 +144,6 @@ export interface Entity {
   config: Config;
   dead: boolean;
   damaged: boolean;
-  projectiles: IProjectile[];
-  projectilePool: IProjectilePool;
   stats: Stats;
   boundingBox: BoundingBox;
   debug: (context: CanvasRenderingContext2D) => void;
@@ -217,7 +215,7 @@ export interface Player extends Entity {
   position: Coordinates;
   state: PlayerState;
   resetAnimationState: () => void;
-  update: (collisionStates: CollisionStates, activeActions: AllActions[], cursorPosition: Coordinates, enemies: Enemy[], combat: boolean) => void;
+  update: (collisionStates: CollisionStates, activeActions: AllActions[], enemies: Enemy[], combat: boolean) => void;
 };
 export interface PlayerConfig extends Config {
   combat: BaseCombatType;
