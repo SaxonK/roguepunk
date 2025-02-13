@@ -1,11 +1,11 @@
-import { AnimationFrameDetails, BoundingBox, Enemy as EnemyInterface, EnemyConfig, EnemyState, Player, EnemyStats, EventEmitter, ProjectilePool } from "../../utils/types/interfaces";
+import { AnimationFrameDetails, BoundingBox, Enemy as EnemyInterface, EnemyConfig, EnemyState, Player, EnemyStats, EventEmitter, IProjectilePool } from "../../utils/types/interfaces";
 import { BaseMovementType, Coordinates, EnemyObject, Events } from "../../utils/types/types";
 import Projectile from "../projectiles/projectile";
 export default class Enemy implements EnemyInterface {
   config: EnemyConfig;
   damaged: boolean = false;
   projectiles: Projectile[] = [];
-  projectilePool: ProjectilePool;
+  projectilePool: IProjectilePool;
   stats: EnemyStats;
   state: EnemyState;
   
@@ -21,7 +21,7 @@ export default class Enemy implements EnemyInterface {
     enemy: EnemyObject,
     position: Coordinates,
     eventEmitter: EventEmitter<Events>,
-    projectilePool: ProjectilePool,
+    projectilePool: IProjectilePool,
     state: EnemyState,
     target: Coordinates = {x: 0, y: 0}
   ) {
@@ -209,7 +209,7 @@ export default class Enemy implements EnemyInterface {
       this.melee(player);
       this.lastAttack = window.performance.now();
     } else if(this.config.combat === 'range') {
-      this.range();
+      // this.range();
       this.lastAttack = window.performance.now();
     };
   };
@@ -236,7 +236,8 @@ export default class Enemy implements EnemyInterface {
       this.attackAnimation = false;
     }
   };
-  private range(): void {
+  /* To be fixed in next sprint */ /* 
+    private range(): void {
     const position = { x: this.state.gameplay.position.x, y: this.state.gameplay.position.y };
     const projectile = new Object(this.projectilePool.getProjectile({
       name: this.config.name,
@@ -252,7 +253,7 @@ export default class Enemy implements EnemyInterface {
       speed: this.stats.speed
     }, position, this.config)) as Projectile;
     this.projectiles.push(projectile);
-  };
+  }; */
   private renderPositionPoints(context: CanvasRenderingContext2D, position: Coordinates, textPosition: 'top' | 'bottom', color: string): void {
     const verticalAlign = textPosition === 'top' ? -8: 11;
     context.fillStyle = color;
@@ -285,8 +286,8 @@ export default class Enemy implements EnemyInterface {
           this.projectilePool.returnProjectile(projectile);
           return false;
         }
-        projectile.update(targetPosition);
-        projectile.attack(player);
+        /* projectile.update(targetPosition);
+        projectile.attack(player); */
         return true;
       });
     };
