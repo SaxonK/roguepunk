@@ -62,6 +62,16 @@
       "displayOrder": 1,
       "draggable": true,
       "visible": true
+    },
+    {
+      "name": "weapons",
+      "type": "List",
+      "value": [],
+      "maxValue": null,
+      "direction": null,
+      "displayOrder": 2,
+      "draggable": true,
+      "visible": true
     }
   ],
   "top-center": [

@@ -5,6 +5,7 @@
   import { computed, defineEmits, ref } from 'vue';
   import Basic from '@/components/hud/elements/Basic.vue';
   import Detailed from '@/components/hud/elements/Detailed.vue';
+  import List from '@/components/hud/elements/List.vue';
   import Progressbar from '@/components/hud/elements/Progressbar.vue';
   import Container from '@/components/hud/elements/Container.vue';
 
@@ -25,6 +26,7 @@
     Basic,
     Container,
     Detailed,
+    List,
     Progressbar
   };
   const emit = defineEmits(['elementDropped']);

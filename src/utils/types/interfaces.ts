@@ -1,4 +1,4 @@
-import { ActionBinding, AllActions, ActionStates, AnimationType, BaseCombatType, BaseMovementType, CharacterBoundingBoxByEntity, CollisionStates, Coordinates, EntityType, EntityTypeCharactersByEntity, EntityTypeCharacterCodes, Hotspots, SceneTypes, WorldTypes } from "./types";
+import { ActionBinding, AllActions, ActionStates, AnimationType, BaseCombatType, BaseMovementType, CharacterBoundingBoxByEntity, CollisionStates, Coordinates, EntityType, EntityTypeCharactersByEntity, EntityTypeCharacterCodes, Hotspots, SceneTypes, WeaponStats, WeaponTypes, WorldTypes } from "./types";
 
 export interface AnimationData {
   active: boolean;
@@ -144,8 +144,6 @@ export interface Entity {
   config: Config;
   dead: boolean;
   damaged: boolean;
-  projectiles: Projectile[];
-  projectilePool: ProjectilePool;
   stats: Stats;
   boundingBox: BoundingBox;
   debug: (context: CanvasRenderingContext2D) => void;
@@ -217,7 +215,7 @@ export interface Player extends Entity {
   position: Coordinates;
   state: PlayerState;
   resetAnimationState: () => void;
-  update: (collisionStates: CollisionStates, activeActions: AllActions[], cursorPosition: Coordinates, enemies: Enemy[], combat: boolean) => void;
+  update: (collisionStates: CollisionStates, activeActions: AllActions[], enemies: Enemy[], combat: boolean) => void;
 };
 export interface PlayerConfig extends Config {
   combat: BaseCombatType;
@@ -226,38 +224,31 @@ export interface PlayerGameplayState extends EntityGameplayState {
   coins: number;
   experience: LevelSystem;
   items: Array<Item>;
-  weapons: Array<Weapon>;
+  weapons: Array<IWeapon>;
 };
 export interface PlayerState extends State {
   gameplay: PlayerGameplayState;
 };
-export interface Projectile {
-  boundingBox: BoundingBox;
+export interface IProjectile {
+  angle: number;
+  creation: EpochTimeStamp;
+  duration: number;
   expired: boolean;
-  attack: (target: Player | Enemy) => void;
-  debug: (context: CanvasRenderingContext2D) => void;
-  update: (targetPosition: Coordinates) => void;
-  render: (context: CanvasRenderingContext2D, offset: Coordinates) => void;
-  reset: (config: ProjectileConfig) => void;
-};
-export interface ProjectileConfig extends Config {
-  damage: number;
   pierce: number;
-  range: number;
-  speed: number;
+  position: Coordinates;
+};
+export interface IProjectilePool {
+  getProjectile: (startingPosition: Coordinates, targetPosition: Coordinates) => IProjectile;
+  returnProjectile: (projectile: IProjectile) => void;
+};
+export interface ProjectileState {
+  pierce: number;
+  position: Coordinates;
 };
 export interface IScenes {
   background: HTMLImageElement;
   foreground: HTMLImageElement;
   debug: HTMLImageElement;
-};
-export interface ProjectilePool {
-  getProjectile: (config: ProjectileConfig, position: Coordinates, entityConfig: Config) => Projectile;
-  returnProjectile: (projectile: Projectile) => void;
-};
-export interface ProjectileState {
-  pierce: number;
-  position: Coordinates;
 };
 export interface Scope {
   viewport: HTMLCanvasElement;
@@ -342,6 +333,7 @@ export interface Tilemap {
   getLayerByName: (layerName: string) => Layer | void;
   getTilePositionFromCanvasPosition: (canvasPosition: Coordinates) => Coordinates;
   getRandomTilePositionByLayer: (layerName: string) => Coordinates;
+  getRandomTilePositionByPosition: (position: Coordinates) => Coordinates;
   render: (context: CanvasRenderingContext2D, scene: SceneTypes) => void;
 };
 export interface TilePlacement {
@@ -349,10 +341,27 @@ export interface TilePlacement {
   x: number;
   y: number;
 };
-export interface Weapon {
-  id: number;
-  type: string;
-  stats: Object;
+export interface IWeapon {
+  name: string;
+  desciption: string;
+  level: number;
+  stats: WeaponStats;
+  type: WeaponTypes;
+  effects: [];
+  weight: number;
+  active: boolean;
+  projectiles: IProjectile[];
+  lastFireTime: EpochTimeStamp;
+  fire: (projectilePool: IProjectilePool, position: Coordinates, targetPosition: Coordinates) => void;
+  update: (projectilePool: IProjectilePool, position: Coordinates) => void;
+};
+export interface IWeaponsManager {
+  readonly activeWeaponList: IWeapon[];
+  readonly availableWeapons: IWeapon[];
+  activateWeapon: (weaponName: string) => void;
+  levelUpWeapon: (weaponName: string) => void;
+  getWeaponsByRandomAmount: () => IWeapon[];
+  reset: () => void;
 };
 export interface IWorld {
   name: string;

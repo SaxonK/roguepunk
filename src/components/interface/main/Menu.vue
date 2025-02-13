@@ -71,7 +71,6 @@
   };
   const newGame = (): void => {
     emit('newGame');
-    eventEmitter.emit('gameStart', true);
   };
   const settings = (): void => {
     emit('settings');

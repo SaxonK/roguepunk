@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import type { IWeapon } from '@/utils/types/interfaces';
   import type { AnchorPoints, IAnchorPointConfiguration, DroppedElement, ElementSettings, HudEventData } from '@/utils/types/types';
   import type { PropType } from 'vue';
   import { ref } from 'vue';
@@ -14,6 +15,31 @@
 
   const gameEventEmitter = eventEmitter;
   const anchorPointConfiguration = ref<IAnchorPointConfiguration>({ ...AnchorPointConfigurations });
+
+  const isElementSettingsArray = (settings: unknown): settings is ElementSettings[] => {
+    return Array.isArray(settings) && settings.every(item => 
+      'name' in item &&
+      'type' in item &&
+      'value' in item &&
+      'maxValue' in item &&
+      'direction' in item &&
+      'displayOrder' in item &&
+      'draggable' in item &&
+      'visible' in item
+    );
+  };
+  const isWeaponArray = (value: unknown): value is IWeapon[] => {
+    return Array.isArray(value) && value.every(item => 
+      'name' in item &&
+      'desciption' in item &&
+      'level' in item &&
+      'stats' in item &&
+      'type' in item &&
+      'effects' in item &&
+      'weight' in item &&
+      'active' in item
+    );
+  };
 
   const getCurrentAnchorPoint = (elementName: string): AnchorPoints | undefined => {
     for(const anchorPoint in anchorPointConfiguration.value) {
@@ -42,10 +68,10 @@
       const currentPath = `${path}[${i}]`;
 
       if (element.name === targetName) return element;
-      if (Array.isArray(element.value)) {
+      if (isElementSettingsArray(element.value)) {
         const nestedResult = search(element.value, `${currentPath}.value`, targetName);
         if (nestedResult) return nestedResult;
-      }
+      };
     }
     return null;
   };
@@ -62,6 +88,7 @@
             if(typeof result.value === 'number' && field === 'maxValue') result[field] = data.maxValue;
             if(typeof result.value === 'number' && field === 'value') result[field] = data.numValue;
             if(typeof result.value === 'string' && field === 'value') result[field] = data.stringValue;
+            if(isWeaponArray(result.value) && field === 'value') result[field] = [...data.arrayValue];
             break;
           case 'subtract':
             if(typeof result.value === 'number') result[field] -= data.numValue;

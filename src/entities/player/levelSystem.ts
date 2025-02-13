@@ -6,6 +6,7 @@ export default class LevelSystem implements ILevelSystem {
   
   private constant: number;
   private eventEmitter: EventEmitter<Events>;
+  private itemsAvailable: boolean = true;
   private startingExperience: number;
 
   constructor(constant: number, eventEmitter: EventEmitter<Events>, startingXP: number = 0) {
@@ -15,6 +16,7 @@ export default class LevelSystem implements ILevelSystem {
     this.startingExperience = startingXP;
 
     this.eventEmitter.on('playerGainExperience', (data) => this.addExperience(data));
+    this.eventEmitter.on('itemsManagerMaxed', (data) => this.itemsAvailable = data);
   };
 
   /* Getters */
@@ -42,17 +44,18 @@ export default class LevelSystem implements ILevelSystem {
   /* Public Methods */
   public addExperience(experience: number): void {
     if(this.experience === 0) { 
-      this.eventEmitter.emit('hudUpdateMaxValue', { name: 'experience', numValue: this.remaindingExperienceAfterLevelUp, maxValue: this.experienceToNextLevel, stringValue: '', booleanValue: false, updateType: 'replace' });
+      this.eventEmitter.emit('hudUpdateMaxValue', { name: 'experience', arrayValue: [], numValue: this.remaindingExperienceAfterLevelUp, maxValue: this.experienceToNextLevel, stringValue: '', booleanValue: false, updateType: 'replace' });
     }
     const currentLevel = this.level;
     this.experience += experience;
 
     if(currentLevel !== this.level) {
-      this.eventEmitter.emit('hudUpdateValue', { name: 'level', numValue: this.level, maxValue: 0, stringValue: '', booleanValue: false, updateType: 'replace' });
-      this.eventEmitter.emit('hudUpdateValue', { name: 'experience', numValue: this.remaindingExperienceAfterLevelUp, maxValue: 0, stringValue: '', booleanValue: false, updateType: 'replace' });
-      this.eventEmitter.emit('hudUpdateMaxValue', { name: 'experience', numValue: this.remaindingExperienceAfterLevelUp, maxValue: this.experienceToNextLevel, stringValue: '', booleanValue: false, updateType: 'replace' });
+      this.eventEmitter.emit('hudUpdateValue', { name: 'level', arrayValue: [], numValue: this.level, maxValue: 0, stringValue: '', booleanValue: false, updateType: 'replace' });
+      this.eventEmitter.emit('hudUpdateValue', { name: 'experience', arrayValue: [], numValue: this.remaindingExperienceAfterLevelUp, maxValue: 0, stringValue: '', booleanValue: false, updateType: 'replace' });
+      this.eventEmitter.emit('hudUpdateMaxValue', { name: 'experience', arrayValue: [], numValue: this.remaindingExperienceAfterLevelUp, maxValue: this.experienceToNextLevel, stringValue: '', booleanValue: false, updateType: 'replace' });
+      if(this.itemsAvailable) this.eventEmitter.emit('levelChanged', this.level);
     } else {
-      this.eventEmitter.emit('hudUpdateValue', { name: 'experience', numValue: experience, maxValue: 0, stringValue: '', booleanValue: false, updateType: 'add' });
+      this.eventEmitter.emit('hudUpdateValue', { name: 'experience', arrayValue: [], numValue: experience, maxValue: 0, stringValue: '', booleanValue: false, updateType: 'add' });
     };
   };
   public reset(): void {

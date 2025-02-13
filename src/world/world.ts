@@ -1,4 +1,4 @@
-import { IEnemyPool, EventEmitter, IEntityAnimationHandler, IInteractionState, IWorld, IWorldStates, Layer, Player, Tilemap, Enemy } from "../utils/types/interfaces";
+import { IEnemyPool, EventEmitter, IEntityAnimationHandler, IInteractionState, IWeaponsManager, IWorld, IWorldStates, Layer, Player, Tilemap, Enemy } from "../utils/types/interfaces";
 import { actions, ActionFunctions, AllActions, Coordinates, EntityTypeCharactersByEntity, Events, OWorld, WorldTypes } from "../utils/types/types";
 
 export default class World implements IWorld {
@@ -16,6 +16,7 @@ export default class World implements IWorld {
   private enemyPool: IEnemyPool;
   private eventEmitter: EventEmitter<Events>;
   private elapsedTime: EpochTimeStamp;
+  private weaponsManager: IWeaponsManager;
   private loading: boolean;
   private nextEnemyWave: EpochTimeStamp = window.performance.now() + 30000;
   private startTime: EpochTimeStamp;
@@ -24,7 +25,8 @@ export default class World implements IWorld {
     entityAnimationHandler: IEntityAnimationHandler,
     config: OWorld,
     enemyPool: IEnemyPool,
-    eventEmitter: EventEmitter<Events>, 
+    eventEmitter: EventEmitter<Events>,
+    weaponsManager: IWeaponsManager,
     player: Player, 
     tilemap: Tilemap,
     tilemapFactoryFunction: (name: string) => Promise<Tilemap>
@@ -35,6 +37,7 @@ export default class World implements IWorld {
     this.combat = config.combat;
     this.enemyPool = enemyPool;
     this.hud = config.hud;
+    this.weaponsManager = weaponsManager;
     this.multipliers = config.multipliers;
     this["additional-effects"] = config["additional-effects"];
 
@@ -119,7 +122,7 @@ export default class World implements IWorld {
         });
       };
 
-      /* Render Enemy Projectiles */
+      /* Render Enemy Projectiles
       let rangeEnemies = enemies.filter(enemy => enemy.config.combat === 'range');
       rangeEnemies.forEach(enemy => {
         if(enemy.projectiles.length > 0) {
@@ -128,7 +131,7 @@ export default class World implements IWorld {
             if(debug) projectile.debug(context);
           });
         };
-      });
+      }); */
 
       /* Render Player */
       const playerFrame = this.entityAnimationHandler.getFrame(
@@ -139,13 +142,13 @@ export default class World implements IWorld {
       this.state.player.render(context, playerFrame);
       if(debug) this.state.player.debug(context);
 
-      /* Render Player Projectiles */
+      /* Render Player Projectiles
       if(this.state.player.projectiles.length > 0) {
         this.state.player.projectiles.forEach(projectile => {
           projectile.render(context, this.state.player.config.offset);
           if(debug) projectile.debug(context);
         });
-      };
+      }; */
     context.restore();  
 
     /* Render tilemap at the origin (relative to camera) */
@@ -201,7 +204,6 @@ export default class World implements IWorld {
     this.state.player.update(
       this.state.tilemap.getCollisionStates(this.state.player.boundingBox, this.state.player.stats.speed),
       activeActions,
-      cursorPosition,
       activeEnemies,
       this.combat
     );
@@ -332,13 +334,14 @@ export default class World implements IWorld {
     const elapsedTimeInSeconds = Math.floor(this.elapsedTime / 1000);
     const timeLimitInSeconds = this.time * 60;
     if(elapsedTimeInSeconds <= timeLimitInSeconds) {
-      this.eventEmitter.emit('hudUpdateValue', { name: 'timer', numValue: 0, maxValue: 0, stringValue: this.displayTime, booleanValue: false, updateType: 'replace' });
+      this.eventEmitter.emit('hudUpdateValue', { name: 'timer', arrayValue: [], numValue: 0, maxValue: 0, stringValue: this.displayTime, booleanValue: false, updateType: 'replace' });
     } else {
       this.eventEmitter.emit("worldEnd", true);
     };
   };
   private toggleHudElementVisibility(): void {
-    this.eventEmitter.emit("hudElementVisibility", { name: "core-stats", numValue: 0, maxValue: 0, stringValue: '', booleanValue: this.hud, updateType: 'replace' });
-    this.eventEmitter.emit("hudElementVisibility", { name: "timer", numValue: 0, maxValue: 0, stringValue: '', booleanValue: this.hud, updateType: 'replace' });
+    this.eventEmitter.emit("hudElementVisibility", { name: "core-stats", arrayValue: [], numValue: 0, maxValue: 0, stringValue: '', booleanValue: this.hud, updateType: 'replace' });
+    this.eventEmitter.emit("hudElementVisibility", { name: "timer", arrayValue: [], numValue: 0, maxValue: 0, stringValue: '', booleanValue: this.hud, updateType: 'replace' });
+    this.eventEmitter.emit("hudElementVisibility", { name: "weapons", arrayValue: [], numValue: 0, maxValue: 0, stringValue: '', booleanValue: this.hud, updateType: 'replace' });
   };
 };

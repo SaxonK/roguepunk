@@ -1,12 +1,9 @@
-import { AnimationFrameDetails, BoundingBox, Enemy, EventEmitter, Player as PlayerInterface, PlayerConfig, PlayerState, ProjectilePool, Stats } from "../../utils/types/interfaces";
+import { AnimationFrameDetails, BoundingBox, Enemy, EventEmitter, Player as PlayerInterface, PlayerConfig, PlayerState, Stats } from "../../utils/types/interfaces";
 import { actions, ActionFunctions, ActionMovement, AllActions, CollisionStates, Events, PlayerObject, Coordinates } from "../../utils/types/types";
-import Projectile from "../projectiles/projectile";
 export default class Player implements PlayerInterface {
   actions: ActionFunctions;
   config: PlayerConfig;
   damaged: boolean = false;
-  projectiles: Projectile[] = [];
-  projectilePool: ProjectilePool;
   stats: Stats;
   state: PlayerState;
 
@@ -16,8 +13,7 @@ export default class Player implements PlayerInterface {
 
   constructor(
     player: PlayerObject,
-    eventEmitter: EventEmitter<Events>,
-    projectilePool: ProjectilePool
+    eventEmitter: EventEmitter<Events>
   ) {
     this.stats = player.stats;
     this.state = player.state;
@@ -33,7 +29,6 @@ export default class Player implements PlayerInterface {
     this.config.offset.y = this.state.gameplay.position.y - this.config.height / 2;
 
     this.eventEmitter = eventEmitter;
-    this.projectilePool = projectilePool;
   };
 
   /* Getters */
@@ -78,28 +73,25 @@ export default class Player implements PlayerInterface {
       this.melee(enemies);
       this.lastAttack = window.performance.now();
     } else if(this.config.combat === 'range') {
-      this.range();
       this.lastAttack = window.performance.now();
     }
   };
   public takeDamage(damage: number): void {
     this.state.gameplay.hitpoints -= damage;
     this.eventEmitter.emit('hitpointsChanged', this.state.gameplay.hitpoints);
-    this.eventEmitter.emit('hudUpdateValue', { name: 'hitpoints', numValue: this.state.gameplay.hitpoints, maxValue: this.stats.hitpoints, stringValue: '', booleanValue: false, updateType: 'replace' });
+    this.eventEmitter.emit('hudUpdateValue', { name: 'hitpoints', arrayValue: [], numValue: this.state.gameplay.hitpoints, maxValue: this.stats.hitpoints, stringValue: '', booleanValue: false, updateType: 'replace' });
     this.damaged = true;
     this.lastDamage = window.performance.now();
   };
   public update(
     collisionStates: CollisionStates,
     activeActions: AllActions[],
-    cursorPosition: Coordinates,
     enemies: Enemy[],
     combat: boolean
   ): void {
     this.move(collisionStates, activeActions);
     if(combat) {
       this.attack(enemies);
-      this.updateProjectiles(cursorPosition, enemies);
       this.resetDamageState();
     }
     // this.animationHandler.update(this.state.gameplay.position, this.stats, this.damaged, null, this.state.lifecycle.dying);
@@ -251,41 +243,9 @@ export default class Player implements PlayerInterface {
       };
     });
   };
-  private range(): void {
-    const position = { x: this.state.gameplay.position.x, y: this.state.gameplay.position.y };
-    const projectile = new Object(this.projectilePool.getProjectile({
-      name: this.config.name,
-      width: 8,
-      height: 4,
-      offset: {
-        x: this.horizontalOffset,
-        y: this.verticalOffset
-      },
-      damage: this.stats.damage,
-      pierce: 1,
-      range: this.stats.range,
-      speed: 10
-    }, position, this.config)) as Projectile;
-    this.projectiles.push(projectile);
-  };
   private resetDamageState(): void {
     if(window.performance.now() - this.lastDamage >= 500) {
       this.damaged = false;
-    };
-  };
-  private updateProjectiles(cursorPosition: Coordinates, enemies: Enemy[]): void {
-    if(this.projectiles.length > 0) {
-      this.projectiles = this.projectiles.filter(projectile => {
-        if (projectile.expired) {
-          this.projectilePool.returnProjectile(projectile);
-          return false;
-        }
-        projectile.update(cursorPosition);
-        enemies.forEach(enemy => {
-          projectile.attack(enemy);
-        });
-        return true;
-      });
     };
   };
 };
