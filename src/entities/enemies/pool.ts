@@ -1,4 +1,4 @@
-import { Enemy as IEnemy, IEnemyPool, EnemyState as IEnemyState, EventEmitter, ProjectilePool } from "../../utils/types/interfaces";
+import { Enemy as IEnemy, IEnemyPool, EnemyState as IEnemyState, EventEmitter, IProjectilePool } from "../../utils/types/interfaces";
 import { Coordinates, Dimensions, EntityTypeCharactersByEntity, EnemyCharacterConfigurations, Events } from "../../utils/types/types";
 import Enemy from "./enemy";
 import EnemyState from "./state";
@@ -8,12 +8,12 @@ export default class EnemyPool implements IEnemyPool {
   private defaultState: IEnemyState;
   private eventEmitter: EventEmitter<Events>;
   private pool: IEnemy[] = [];
-  private projectilePool: ProjectilePool;
+  private projectilePool: IProjectilePool;
 
   constructor(
     characters: EntityTypeCharactersByEntity<'enemy'>[],
     eventEmitter: EventEmitter<Events>,
-    projectilePool: ProjectilePool,
+    projectilePool: IProjectilePool,
   ) {
     this.configurations = {} as EnemyCharacterConfigurations;
     this.constructConfiguration(characters);
