@@ -125,7 +125,7 @@ export default class Game implements Scope {
     let camera = this.state.camera;
     let world = this.state.world;
 
-    world.update(this.controlsManager.activeUserActions, this.mouseCanvasPosition);
+    world.update(this.controlsManager.activeUserActions);
     camera.update(player.state.gameplay.position.x, player.state.gameplay.position.y);
   };
   private render(): void {
