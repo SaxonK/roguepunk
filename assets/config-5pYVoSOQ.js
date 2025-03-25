@@ -1,0 +1,1 @@
+const e="dungeon",n=20,o=!0,c=!0,t={time:1,movement:2,gold:1,experience:2,enemies:1,"enemy-health":1},m={name:e,time:20,combat:!0,hud:!0,multipliers:t,"additional-effects":{}};export{o as combat,m as default,c as hud,t as multipliers,e as name,n as time};
