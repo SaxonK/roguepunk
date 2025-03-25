@@ -333,7 +333,7 @@ export interface Tilemap {
   getLayerByName: (layerName: string) => Layer | void;
   getTilePositionFromCanvasPosition: (canvasPosition: Coordinates) => Coordinates;
   getRandomTilePositionByLayer: (layerName: string) => Coordinates;
-  getRandomTilePositionByPosition: (position: Coordinates) => Coordinates;
+  // getRandomTilePositionByPosition: (position: Coordinates) => Coordinates;
   render: (context: CanvasRenderingContext2D, scene: SceneTypes) => void;
 };
 export interface TilePlacement {
@@ -352,8 +352,8 @@ export interface IWeapon {
   active: boolean;
   projectiles: IProjectile[];
   lastFireTime: EpochTimeStamp;
-  fire: (projectilePool: IProjectilePool, position: Coordinates, targetPosition: Coordinates) => void;
-  update: (projectilePool: IProjectilePool, position: Coordinates) => void;
+  // fire: (projectilePool: IProjectilePool, position: Coordinates, targetPosition: Coordinates) => void;
+  // update: (projectilePool: IProjectilePool, position: Coordinates) => void;
 };
 export interface IWeaponsManager {
   readonly activeWeaponList: IWeapon[];
