@@ -381,7 +381,7 @@ export interface IWorld {
     [key: string]: boolean;
   };
   render: (context: CanvasRenderingContext2D, cameraOffset: Coordinates, debug: boolean) => void;
-  update: (activeActions: AllActions[], cursorPosition: Coordinates) => void;
+  update: (activeActions: AllActions[]) => void;
 };
 export interface IWorldState {
   interaction: {

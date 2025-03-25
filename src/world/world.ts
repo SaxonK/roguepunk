@@ -16,7 +16,7 @@ export default class World implements IWorld {
   private enemyPool: IEnemyPool;
   private eventEmitter: EventEmitter<Events>;
   private elapsedTime: EpochTimeStamp;
-  private weaponsManager: IWeaponsManager;
+  weaponsManager: IWeaponsManager;
   private loading: boolean;
   private nextEnemyWave: EpochTimeStamp = window.performance.now() + 30000;
   private startTime: EpochTimeStamp;
@@ -157,7 +157,7 @@ export default class World implements IWorld {
       this.state.tilemap.render(context, 'foreground');
     context.restore();
   };
-  public update(activeActions: AllActions[], cursorPosition: Coordinates): void {
+  public update(activeActions: AllActions[]): void {
     if(this.loading) return;
     if(this.startTime === 0) {
       this.toggleHudElementVisibility(); /* Set HUD visibility state on first gameloop */
