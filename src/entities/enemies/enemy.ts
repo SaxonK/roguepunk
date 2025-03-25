@@ -279,7 +279,7 @@ export default class Enemy implements EnemyInterface {
 
     return current;
   };
-  private updateProjectiles(targetPosition: Coordinates, player: Player): void {
+  private updateProjectiles(_targetPosition: Coordinates, _player: Player): void {
     if(this.projectiles.length > 0) {
       this.projectiles = this.projectiles.filter(projectile => {
         if (projectile.expired) {

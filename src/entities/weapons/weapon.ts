@@ -11,6 +11,7 @@ export default class Weapon implements IWeapon {
   weight: number;
   active: boolean;
   lastUpdateTime: EpochTimeStamp = 0;
+  lastFireTime: EpochTimeStamp = 0;
 
   projectiles: IProjectile[] = [];
 
