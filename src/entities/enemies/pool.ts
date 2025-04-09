@@ -82,7 +82,7 @@ export default class EnemyPool implements IEnemyPool {
     characters: EntityTypeCharactersByEntity<'enemy'>[]
   ): Promise<void> {
     for(const character of characters) {
-      const config = await import(`../../config/enemies/${character}`);
+      const config = await import(`../../config/enemies/${character}.json`);
       this.configurations[character as EntityTypeCharactersByEntity<'enemy'>] = config;
       this.configurations[character].config.name = `enemy.${character}`;
     };

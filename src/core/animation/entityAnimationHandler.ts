@@ -223,7 +223,7 @@ export default class EntityAnimationHandler implements IEntityAnimationHandler {
     Object.entries(this.library).forEach(([entity, characters]) => {
       Object.entries(characters).forEach(([character, animations]) => {
         Object.entries(animations).forEach(([animation, data]) => {
-          const source = entity === 'player' ? `./src/assets/images/entities/${entity}/${character}/${animation}.png` : `./src/assets/images/entities/${entity}/${world}/${character}/${animation}.png`;
+          const source = entity === 'player' ? `/assets/images/entities/${entity}/${character}/${animation}.png` : `/assets/images/entities/${entity}/${world}/${character}/${animation}.png`;
           data.spritesheet = new Image();
           data.spritesheet.src = source;
           data.frames = [];

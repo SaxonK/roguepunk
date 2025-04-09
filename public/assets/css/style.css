@@ -27,7 +27,7 @@ body {
 #game-container {
   border: none;
   background-color: #000;
-  cursor: url(../images/crosshair.png) 16 16, default;
+  cursor: url(/assets/images/crosshair.png) 16 16, default;
   z-index: 1;
 }
 
@@ -39,7 +39,7 @@ body {
   padding: 0.5rem;
   background: transparent;
   box-sizing: border-box;
-  cursor: url(../images/crosshair.png) 16 16, default;
+  cursor: url(/assets/images/crosshair.png) 16 16, default;
   z-index: 2;
 }
 #element-layer #anchor-wrapper {
@@ -259,86 +259,6 @@ body {
   -webkit-background-clip: text;
 }
 
-/* Main menu */
-.menu {
-  position: fixed;
-  display: flex;
-  opacity: 1;
-  visibility: visible;
-  width: 100%;
-  height: 100%;
-  transition: all 400ms ease-in-out;
-  z-index: 10;
-}
-.menu.hidden {
-  opacity: 0;
-  visibility: collapse;
-  z-index: -10;
-}
-.menu-wrapper {
-  position: relative;
-  display: flex;
-  width: inherit;
-  height: inherit;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.menu h1 {
-  font-size: 56px;
-  font-family: "Knewave", system-ui;
-  font-weight: 400;
-  font-style: normal;
-  margin: -5rem 0 3rem;
-  background-image: linear-gradient(#ff9190, #fdc094);
-  color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
-  z-index: 1;
-}
-.actions {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  z-index: 1;
-}
-.actions button {
-  font-family: "Knewave", system-ui;
-  font-weight: 100;
-  font-style: normal;
-  font-size: 24px;
-  color: #fffc;
-  padding: 0.5rem 1rem;
-  background: transparent;
-  background-image: none;
-  border: none;
-  cursor: pointer;
-}
-.actions button.highlight {
-  animation-delay: 180ms;
-  animation-fill-mode: forwards;
-  animation-iteration-count: 1;
-  animation-name: menu-highlight-loop;
-  background-image: url('/src/assets/images/menu-highlight-enter.gif'), url('/src/assets/images/menu-highlight-loop.gif');
-  background-position: -18px -18px, 0px 230px;
-  background-size: calc(100% + 2rem);
-  color: #4e39c4;
-}
-.actions button#pause {
-  display: none;
-}
-.actions button#start {
-  display: block;
-}
-.menu-background {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  object-fit: cover;
-  z-index: 0;
-}
 #fps-notification {
   position: absolute;
   display: block;
@@ -372,10 +292,6 @@ body {
 }
 #fps-notification #fps-state {
   text-transform: capitalize;
-}
-
-@keyframes menu-highlight-loop {
-  to { background-position: 0px 230px, -18px -18px; }
 }
 @keyframes menu-transition {
   from { opacity: 0; }

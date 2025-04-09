@@ -52,17 +52,29 @@
     cursor: pointer;
   }
   button.highlight {
-    animation-delay: 180ms;
+    animation-duration: 135ms;
     animation-fill-mode: forwards;
     animation-iteration-count: 1;
     animation-name: menu-highlight-loop;
-    background-image: url('@/assets/images/menu-highlight-enter.gif'), url('@/assets/images/menu-highlight-loop.gif');
-    background-position: -18px -18px, 0px 230px;
-    background-size: calc(100% + 2rem);
+    background-image: url('/assets/images/menu-highlight-enter-alt.gif'), url('/assets/images/menu-highlight-loop.gif');
+    background-position: 0rem -1rem, 0rem -1rem;
+    background-size: 100%;
     color: #4e39c4;
   }
   button.inactive {
     color: rgba(255, 255, 255, 0.25);
     cursor: default;
+  }
+  
+  @keyframes menu-highlight-loop {
+    0% {
+      background-size: 100%, 0;
+    }
+    99.9999% {
+      background-size: 100%, 0;
+    }
+    100% { 
+      background-size: 0, 100%;
+    }
   }
 </style>
