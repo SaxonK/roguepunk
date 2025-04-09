@@ -47,6 +47,12 @@
     backdrop-filter: blur(6px);
     border: 4px solid rgb(253, 192, 148);
     border-radius: 26px 0;
+    z-index: 10;
+  }
+  .menu.hidden {
+    opacity: 0;
+    visibility: collapse;
+    z-index: -10;
   }
   .menu h2 {
     width: 100%;

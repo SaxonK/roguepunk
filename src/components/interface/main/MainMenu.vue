@@ -14,7 +14,7 @@
 <template>
   <FullscreenMenu :visibility="visibility">
     <Menu title="RoguePunk" @newGame="emit('hide', 'mainMenu');"></Menu>
-    <video class="menu-background" autoplay muted loop><source src="@/assets/videos/menu-background.mp4" type="video/mp4" /></video>
+    <video class="menu-background" autoplay muted loop><source src="/assets/videos/menu-background.mp4" type="video/mp4" /></video>
   </FullscreenMenu>
 </template>
 

@@ -138,7 +138,7 @@
   </div>
 </template>
 
-<style lang="css">
+<style lang="css" scoped>
   .menu-items {
     position: relative;
     display: flex;
@@ -161,5 +161,17 @@
     background-clip: text;
     -webkit-background-clip: text;
     z-index: 1;
+  }
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 1;
+  }
+  .actions button#pause {
+    display: none;
+  }
+  .actions button#start {
+    display: block;
   }
 </style>

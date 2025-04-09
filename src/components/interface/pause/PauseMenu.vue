@@ -22,3 +22,9 @@
     <Actions @resume="hide('pauseMenu')" @quit="quit('pauseMenu')" />
   </OverlayMenu>
 </template>
+
+<style lang="css" scoped>
+  button {
+    background-position: 0rem -0.5rem, 0rem -0.5rem;
+  }
+</style>
