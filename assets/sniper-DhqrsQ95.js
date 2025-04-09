@@ -1,0 +1,1 @@
+const e={name:"sniper",combat:"melee",movement:"wander",width:16,height:32,offset:{x:0,y:0}},t={experience:30,damage:5,fireRate:.5,hitpoints:10,range:20,resilience:1,speed:5},n={config:e,stats:t};export{e as config,n as default,t as stats};

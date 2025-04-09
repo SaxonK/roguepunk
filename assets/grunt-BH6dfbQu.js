@@ -1,0 +1,1 @@
+const e={name:"grunt",combat:"melee",movement:"wander",width:32,height:32,offset:{x:0,y:0}},t={experience:5,damage:5,fireRate:.1,hitpoints:10,range:20,resilience:1,speed:1},n={config:e,stats:t};export{e as config,n as default,t as stats};
